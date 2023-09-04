@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">vemas application</string>
+    <string name="save">save</string>
+    <string name="login">Login</string>
+    <string name="password">Password</string>
+    <string name="email">Email</string>
+    <string name="booking_new">Booking-New</string>
+    <string name="search">Search.</string>
+    <string name="search_icon">Search Icon</string>
+</resources>

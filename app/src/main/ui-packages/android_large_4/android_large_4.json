@@ -1,0 +1,101 @@
+{
+  "name": "android_large_4",
+  "version": 32,
+  "source-key": {
+    "type": "figma",
+    "file": "iGf0bmGwu0fBjv2kJ9Iui8",
+    "node": "255:45",
+    "version": "4070452556",
+    "component-id": "7ad23af428f25950db76c6708dbe0c06afcad3d2"
+  },
+  "default": "Android Large - 4",
+  "design": {
+    "atoms": [
+      {
+        "type": "group",
+        "id": "top_level",
+        "root": "true"
+      },
+      {
+        "type": "vector",
+        "id": "Rectangle 23"
+      },
+      {
+        "type": "image",
+        "id": "workshop_software_vemas_logo 2"
+      }
+    ],
+    "modes": {
+      "Android Large - 4": {
+        "rules": [
+          {
+            "id": "top_level",
+            "border-radius": "30.0",
+            "is-structured": "false",
+            "children": [
+              "Rectangle 23",
+              "workshop_software_vemas_logo 2"
+            ],
+            "background-color": {
+              "alpha": "1.0",
+              "hue": "0.0",
+              "saturation": "0.0",
+              "value": "1.0"
+            }
+          },
+          {
+            "id": "Rectangle 23",
+            "size-constraints": {
+              "width-constraints": {
+                "sizing-mode": "fixed",
+                "value": "360.0"
+              },
+              "height-constraints": {
+                "sizing-mode": "fixed",
+                "value": "800.0"
+              }
+            },
+            "vector-content": "rectangle_23.svg"
+          },
+          {
+            "id": "workshop_software_vemas_logo 2",
+            "alignment": {
+              "horizontal": {
+                "attachment": "center",
+                "offset": "0.0"
+              },
+              "vertical": {
+                "attachment": "center",
+                "offset": "-0.5"
+              }
+            },
+            "size-constraints": {
+              "width-constraints": {
+                "sizing-mode": "fixed",
+                "value": "244.0"
+              },
+              "height-constraints": {
+                "sizing-mode": "fixed",
+                "value": "59.0"
+              }
+            },
+            "image-content": "workshop_software_vemas_logo_2.png",
+            "scale": "cover"
+          }
+        ]
+      }
+    }
+  },
+  "previews": [
+    {
+      "design": "Android Large - 4",
+      "size": {
+        "width": 360.0,
+        "height": 800.0
+      }
+    }
+  ],
+  "adin-component-search-paths": [],
+  "image-search-paths": [],
+  "vector-search-paths": []
+}

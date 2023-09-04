@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include
+        layout="@layout/custom_app_br2"
+        android:layout_width="match_parent"
+        android:layout_height="60dp" />
+
+
+    <include
+        layout="@layout/lowercustombar"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_marginTop="840dp"/>
+
+    <CalendarView
+        android:id="@+id/calendarView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_margin="-15dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginBottom="1dp" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/bookingRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:visibility="gone" />
+
+
+    <Button
+        android:id="@+id/searchButton"
+        android:layout_width="360dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="15dp"
+        android:layout_marginBottom="26dp"
+        android:background="@drawable/rounded_box"
+        android:drawableStart="@drawable/searchbutton"
+        android:drawablePadding="-20dp"
+        android:hint="@string/search"
+        android:inputType="text"
+        android:onClick="performSearch"
+        android:layout_marginTop="350dp"
+        android:paddingStart="16dp"/>
+
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/searchButton"
+        android:layout_marginTop="0dp">
+
+        <LinearLayout
+            android:id="@+id/linearLayoutContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="8dp">
+            <!-- Add your dynamic LinearLayouts here -->
+        </LinearLayout>
+    </ScrollView>
+
+
+</RelativeLayout>

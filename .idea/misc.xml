@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/Users/User/Downloads/vemasapplication/vemasapplication/app/src/main/res/drawable-nodpi/_bg__android_large___6_shape.xml" value="0.118" />
+        <entry key="..\:/Users/User/Downloads/vemasapplication/vemasapplication/app/src/main/res/drawable-nodpi/rectangle_25_shape.xml" value="0.1" />
+        <entry key="..\:/Users/User/Downloads/vemasapplication/vemasapplication/app/src/main/res/drawable-nodpi/rectangle_26_shape.xml" value="0.1" />
+        <entry key="..\:/Users/User/Downloads/vemasapplication/vemasapplication/app/src/main/res/drawable-nodpi/rectangle_27_shape.xml" value="0.1" />
+        <entry key="..\:/Users/User/Downloads/vemasapplication/vemasapplication/app/src/main/res/drawable-nodpi/rectangle_29_shape.xml" value="0.1" />
+        <entry key="..\:/Users/User/Downloads/vemasapplication/vemasapplication/app/src/main/res/drawable-nodpi/rectangle_35_shape.xml" value="0.1" />
+        <entry key="..\:/Users/User/Downloads/vemasapplication/vemasapplication/app/src/main/res/layout/activity_bookingform.xml" value="0.14074074074074075" />
+        <entry key="..\:/Users/User/Downloads/vemasapplication/vemasapplication/app/src/main/res/layout/activity_calender.xml" value="0.1" />
+        <entry key="..\:/Users/User/Downloads/vemasapplication/vemasapplication/app/src/main/res/layout/activity_login.xml" value="0.33" />
+        <entry key="..\:/Users/User/Downloads/vemasapplication/vemasapplication/app/src/main/res/layout/activity_main.xml" value="0.1" />
+        <entry key="..\:/Users/User/Downloads/vemasapplication/vemasapplication/app/src/main/res/layout/activity_startedscreen.xml" value="0.1" />
+        <entry key="..\:/Users/User/Downloads/vemasapplication/vemasapplication/app/src/main/res/layout/booking_details_layout.xml" value="0.33" />
+        <entry key="..\:/Users/User/Downloads/vemasapplication/vemasapplication/app/src/main/res/layout/custom_app_br.xml" value="0.14074074074074075" />
+        <entry key="..\:/Users/User/Downloads/vemasapplication/vemasapplication/app/src/main/res/layout/custom_app_br2.xml" value="0.17375886524822695" />
+        <entry key="..\:/Users/User/Downloads/vemasapplication/vemasapplication/app/src/main/res/layout/lowercustombar.xml" value="0.1" />
+        <entry key="..\:/Users/User/Downloads/vemasapplication/vemasapplication/app/src/main/res/layout/upperbar.xml" value="0.17375886524822695" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/build/classes" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="Android" />
+  </component>
+</project>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Background Color -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#4278B7" />
+
+    <!-- Logo Image -->
+    <ImageView
+        android:layout_width="314dp"
+        android:layout_height="168dp"
+        android:layout_centerInParent="true"
+        android:src="@drawable/workshop_software_vemas_logo_2" /> <!-- Replace with your logo image -->
+
+
+    <!-- Toolbar -->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/custom_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="#4278B7"
+        android:titleTextColor="@color/customOutlineColor"
+        app:titleMarginBottom="10dp"
+        app:titleMarginStart="125dp"
+        tools:titleTextColor="#FFFEFE" />
+
+</RelativeLayout>

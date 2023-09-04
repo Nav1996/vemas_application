@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Background Color -->
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="700dp"
+        android:layout_alignParentStart="true"
+        android:background="#4278B7" />
+
+       <View
+        android:id="@+id/whiteSpaceArea"
+        android:layout_width="match_parent"
+        android:layout_marginTop="450dp"
+        android:layout_height="300dp"
+        android:background="#FFFFFF" />
+
+    <!-- Logo Image -->
+    <!-- Replace with your logo image -->
+
+    <ImageView
+        android:id="@+id/logoImage"
+        android:layout_width="345dp"
+        android:layout_height="76dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="261dp"
+        android:src="@drawable/workshop_software_vemas_logo_2" />
+
+
+    <ImageView
+        android:id="@+id/logoImageView"
+        android:layout_width="420dp"
+        android:layout_height="476dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+
+        android:layout_marginTop="334dp"
+
+        android:src="@drawable/reclogin" />
+
+    <TextView
+        android:id="@+id/emailLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/logoImageView"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="71dp"
+        android:layout_marginTop="-300dp"
+        android:text="Email"
+        android:textColor="#000000"
+        android:textSize="14sp" />
+
+    <EditText
+        android:id="@+id/emailEditText"
+        android:layout_width="260dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/logoImageView"
+
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="71dp"
+        android:layout_marginTop="-268dp"
+        android:background="@drawable/rounded_box"
+        android:hint="Email"
+        android:inputType="textEmailAddress"
+        android:padding="8dp" />
+
+    <TextView
+        android:id="@+id/passwordLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/logoImageView"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="71dp"
+        android:layout_marginTop="-220dp"
+        android:text="Password"
+        android:textColor="#000000"
+        android:textSize="14sp" />
+
+    <EditText
+        android:id="@+id/passwordEditText"
+        android:layout_width="260dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/emailEditText"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="71dp"
+        android:layout_marginTop="43dp"
+        android:layout_marginEnd="56dp"
+        android:background="@drawable/rounded_box"
+        android:hint="@string/password"
+        android:inputType="textPassword"
+        android:padding="8dp" />
+
+    <ImageButton
+        android:id="@+id/loginButton"
+        android:layout_width="wrap_content"
+        android:layout_height="49dp"
+        android:layout_below="@id/passwordEditText"
+        android:layout_alignParentStart="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="99dp"
+        android:layout_marginTop="23dp"
+        android:background="@android:color/transparent"
+        android:src="@drawable/loginbutton" />
+
+    <TextView
+        android:layout_width="181dp"
+        android:layout_height="42dp"
+        android:layout_below="@id/loginButton"
+        android:layout_alignParentStart="false"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="-42dp"
+        android:paddingStart="70dp"
+        android:text="@string/login"
+        android:textColor="#FFFFFF"
+        android:textSize="20sp"
+        tools:ignore="RtlSymmetry" />
+
+    <TextView
+        android:id="@+id/signintex"
+        android:layout_width="250dp"
+        android:layout_height="35dp"
+        android:layout_below="@id/emailEditText"
+        android:layout_alignParentStart="false"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="-104dp"
+        android:layout_marginBottom="-9dp"
+        android:paddingStart="90dp"
+        android:text="Sign In"
+        android:textColor="#0B0808"
+        android:textSize="20sp"
+        tools:fontFamily="sans-serif-medium"
+        tools:ignore="HardcodedText,RtlSymmetry" />
+
+</RelativeLayout>
