@@ -76,11 +76,15 @@ public class calender extends AppCompatActivity {
                                                 if (item != null) {
                                                     String vehicleNumber = item.optString("vehicleRegistrationNumber", "");
                                                     String ownerName = item.optString("customerName", "");
-                                                    String time = item.optString("requestedDate", "");
+                                                    String requestedDate = item.optString("requestedDate", "");
 
-                                                    Log.d("Response", "Vehicle Number: " + vehicleNumber);
-                                                    Log.d("Response", "Owner's Name: " + ownerName);
-                                                    Log.d("Response", "Time: " + time);
+                                                    // Extract the time from the requestedDate
+                                                    String time = extractTimeFromDateTime(requestedDate);
+
+
+                                                    Log.d("Response", "" + vehicleNumber);
+                                                    Log.d("Response", "" + ownerName);
+                                                    Log.d("Response", "" + time);
 
                                                     // Inflate the booking details item layout
                                                     View bookingDetailsItem = LayoutInflater.from(calender.this).inflate(R.layout.booking_details_layout, null);
@@ -89,9 +93,9 @@ public class calender extends AppCompatActivity {
                                                     TextView ownerNameTextView = bookingDetailsItem.findViewById(R.id.ownerNameTextView);
                                                     TextView timeTextView = bookingDetailsItem.findViewById(R.id.timeTextView);
 
-                                                    vehicleNumberTextView.setText("Vehicle Number: " + vehicleNumber);
-                                                    ownerNameTextView.setText("Owner's Name: " + ownerName);
-                                                    timeTextView.setText("Time: " + time);
+                                                    vehicleNumberTextView.setText("" + vehicleNumber);
+                                                    ownerNameTextView.setText("" + ownerName);
+                                                    timeTextView.setText("" + time);
 
                                                     // Add the booking details item to the layout
                                                     bookingDetailsLayout.addView(bookingDetailsItem);
@@ -115,5 +119,28 @@ public class calender extends AppCompatActivity {
                 });
             }
         });
+    }
+
+    private String extractTimeFromDateTime(String dateTime) {
+        try {
+            SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+            SimpleDateFormat outputFormat = new SimpleDateFormat("HH:mm:ss");
+
+            // Parse the input date-time string
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(inputFormat.parse(dateTime));
+
+            // Format the time portion
+            return outputFormat.format(calendar.getTime());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "";
+        }
+    }
+
+
+    public void performSearch(View view) {
+        // Implement your search logic here
+        // This method will be called when the searchButton i   s clicked
     }
 }

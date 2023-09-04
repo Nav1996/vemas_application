@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="countries">
-        <item>Country 1</item>
-        <item>Country 2</item>
+        <item>+61</item>
+        <item>+94</item>
         <!-- Add more countries -->
     </string-array>
 
     <string-array name="country_codes">
-        <item>+1</item>
-        <item>+44</item>
+        <item>+61</item>
+        <item>+94</item>
         <!-- Add more country codes -->
     </string-array>
 </resources>
