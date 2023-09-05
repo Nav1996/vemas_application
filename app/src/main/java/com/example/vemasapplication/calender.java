@@ -1,6 +1,7 @@
 package com.example.vemasapplication;
-
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.CalendarView;
@@ -21,6 +22,7 @@ public class calender extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calender);
         String accessToken = getIntent().getStringExtra("accessToken");
+
         Log.d("accesstoken", accessToken);
 
         CalendarView calendarView = findViewById(R.id.calendarView);
@@ -77,14 +79,7 @@ public class calender extends AppCompatActivity {
                                                     String vehicleNumber = item.optString("vehicleRegistrationNumber", "");
                                                     String ownerName = item.optString("customerName", "");
                                                     String requestedDate = item.optString("requestedDate", "");
-
-                                                    // Extract the time from the requestedDate
-                                                    String time = extractTimeFromDateTime(requestedDate);
-
-
-                                                    Log.d("Response", "" + vehicleNumber);
-                                                    Log.d("Response", "" + ownerName);
-                                                    Log.d("Response", "" + time);
+                                                    String id = item.optString("id");
 
                                                     // Inflate the booking details item layout
                                                     View bookingDetailsItem = LayoutInflater.from(calender.this).inflate(R.layout.booking_details_layout, null);
@@ -95,7 +90,25 @@ public class calender extends AppCompatActivity {
 
                                                     vehicleNumberTextView.setText("" + vehicleNumber);
                                                     ownerNameTextView.setText("" + ownerName);
-                                                    timeTextView.setText("" + time);
+                                                    timeTextView.setText("" + requestedDate);
+
+                                                    // Set an OnClickListener to each item
+                                                    bookingDetailsItem.setOnClickListener(new View.OnClickListener() {
+                                                        @Override
+                                                        public void onClick(View v) {
+                                                            // Create an Intent to start the bookingform activity
+                                                            Intent intent = new Intent(calender.this, bookingform.class);
+
+                                                            // Put the data as extras in the Intent
+                                                            intent.putExtra("id", id);
+                                                            intent.putExtra("accessToken", accessToken);
+                                                            intent.putExtra("startdate", formattedStartDate);
+                                                            intent.putExtra("enddate", formattedEndDate);
+
+                                                            // Start the bookingform activity
+                                                            startActivity(intent);
+                                                        }
+                                                    });
 
                                                     // Add the booking details item to the layout
                                                     bookingDetailsLayout.addView(bookingDetailsItem);
@@ -138,9 +151,8 @@ public class calender extends AppCompatActivity {
         }
     }
 
-
     public void performSearch(View view) {
         // Implement your search logic here
-        // This method will be called when the searchButton i   s clicked
+        // This method will be called when the searchButton is clicked
     }
 }

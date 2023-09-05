@@ -62,7 +62,7 @@ public class login extends AppCompatActivity {
 
                                             if (!accessToken.isEmpty()) {
                                                 // Create an Intent to start the 'calender' activity
-                                                Intent intent = new Intent(login.this, bookingform.class);
+                                                Intent intent = new Intent(login.this, calender.class);
 
                                                 // Pass the access token as an extra to the 'calender' activity
                                                 intent.putExtra("accessToken", accessToken);
