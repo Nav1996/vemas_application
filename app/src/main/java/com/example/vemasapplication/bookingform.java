@@ -88,7 +88,7 @@ public class bookingform extends Activity {
             @Override
             public void onClick(View v) {
                 // Call the createBooking function here
-                updateBooking();
+                deleteBooking();
             }
         });
 
@@ -293,6 +293,48 @@ public class bookingform extends Activity {
             showToast("Error: Invalid JSON response");
         }
     }
+
+    private void deleteBooking() {
+        // Call the deleteBooking function from ApiClient
+        ApiClient.deleteBooking(accessToken, id, new ApiClient.ApiResponseListener() {
+            @Override
+            public void onResponse(String response) {
+                try {
+                    // Check if the response is a JSON object
+                    if (response.startsWith("{")) {
+                        // Parse the JSON response
+                        JSONObject jsonResponse = new JSONObject(response);
+                        int statusCode = jsonResponse.getInt("statusCode");
+                        String message = jsonResponse.getString("message");
+
+                        if (statusCode == 200) {
+                            // Success, show the message from the response
+                            showToast(message);
+
+                            // Optionally, navigate to another activity or perform any additional actions here
+                        } else {
+                            // Error, show a toast with the error message
+                            showToast("Error: " + message);
+                        }
+                    } else {
+                        // The response is not a JSON object, treat it as a plain message
+                        showToast(response);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    // Handle JSON parsing error
+                    showToast("Error: Invalid JSON response");
+                }
+            }
+
+            @Override
+            public void onError(Exception e) {
+                showToast("Error: " + e.getMessage());
+            }
+        });
+    }
+
+
 
     private void updateBooking() {
         String bookingId = id; // Replace with the actual booking ID

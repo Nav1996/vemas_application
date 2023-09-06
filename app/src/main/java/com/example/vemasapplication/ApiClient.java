@@ -183,6 +183,35 @@ import java.net.URL;
         });
     }
 
+        public static void deleteBooking(String accessToken, String bookingId, ApiResponseListener listener) {
+            AsyncTask.execute(() -> {
+                try {
+                    // Create URL
+                    URL url = new URL("https://dev.vemas.com.au/api/bookings/" + bookingId);
+
+                    // Create connection
+                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                    connection.setRequestMethod("DELETE");
+                    connection.setRequestProperty("Authorization", accessToken);
+
+                    // Get response code
+                    int responseCode = connection.getResponseCode();
+
+                    if (responseCode == HttpURLConnection.HTTP_OK) {
+                        // The booking was successfully deleted
+                        listener.onResponse("Booking deleted successfully");
+                    } else {
+                        // Handle the error
+                        listener.onError(new Exception("HTTP Error: " + responseCode));
+                    }
+                } catch (IOException e) {
+                    // Handle the exception
+                    listener.onError(e);
+                }
+            });
+        }
+
+
         public static void updateBooking(String accessToken, String bookingId, String vehicleId, String CustomerId, String requestedDate, String customerName,
                                          String customerEmail, String customerMobile, String notes, String customerPhone,
                                          String vehicleRegistrationNumber, String status, ApiResponseListener listener) {
