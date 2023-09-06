@@ -1,18 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:padding="8dp">
 
+
+
     <!-- Vehicle Number TextView -->
     <ImageView
+        android:id="@+id/bookingtriangle"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:src="@drawable/bookingdetailsreaclangle"
         android:layout_marginStart="0dp"
         android:background="@android:color/transparent"/>
+
     <TextView
         android:id="@+id/vehicleNumberTextView"
         android:layout_width="wrap_content"
@@ -21,24 +27,50 @@
         android:textStyle="bold"
         android:layout_marginStart="5dp"/>
 
-    <!-- Owner's Name TextView -->
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginStart="8dp">
-          <TextView
-           android:id="@+id/ownerNameTextView"
-           android:layout_width="wrap_content"
-           android:layout_height="wrap_content"
-           android:text="Owner's Name: "/>
 
-    <!-- Time TextView -->
-         <TextView
-           android:id="@+id/timeTextView"
-           android:layout_width="wrap_content"
-           android:layout_height="wrap_content"
-           android:text="Time: "
-           android:layout_marginTop="15dp"    />
-    </LinearLayout>
+
+
+    <RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/yourLinearLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true">
+
+            <!-- Owner's Name TextView -->
+            <TextView
+                android:id="@+id/ownerNameTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Owner's Name:"
+                android:layout_gravity="end"/>
+
+            <!-- Time TextView -->
+            <TextView
+                android:id="@+id/timeTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Time:"
+                android:layout_gravity="end"
+                android:layout_marginTop="15dp" />
+        </LinearLayout>
+
+
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray"/>
+
+
+
+
+
 </LinearLayout>

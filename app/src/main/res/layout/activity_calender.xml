@@ -15,24 +15,21 @@
         layout="@layout/lowercustombar"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:layout_marginTop="840dp"/>
+        android:layout_alignParentBottom="true"/>
 
     <CalendarView
         android:id="@+id/calendarView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_margin="-15dp"
-        android:layout_marginTop="50dp"
-        android:layout_marginBottom="1dp" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/bookingRecyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:visibility="gone" />
+        android:layout_margin="-15dp"
+        android:layout_marginTop="70dp"
+        android:layout_marginBottom="1dp"
+        android:background="@drawable/searchroundbox"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"/>
+
+
 
 
     <Button
@@ -41,23 +38,23 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginStart="15dp"
+        android:layout_marginStart="26dp"
+        android:layout_marginTop="420dp"
         android:layout_marginBottom="26dp"
-        android:background="@drawable/rounded_box"
+        android:background="@drawable/searchroundbox"
         android:drawableStart="@drawable/searchbutton"
         android:drawablePadding="-20dp"
         android:hint="@string/search"
         android:inputType="text"
         android:onClick="performSearch"
-        android:layout_marginTop="350dp"
-        android:paddingStart="16dp"/>
+        android:paddingStart="16dp" />
 
     <ScrollView
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/searchButton"
-        android:layout_marginTop="0dp">
+        android:layout_marginTop="1dp">
 
         <LinearLayout
             android:id="@+id/linearLayoutContainer"
