@@ -15,7 +15,8 @@
         <include
             layout="@layout/custom_app_br"
             android:layout_width="match_parent"
-            android:layout_height="50dp" />
+            android:layout_height="50dp"
+            android:layout_alignParentTop="true"/>
 
         <LinearLayout
             android:layout_width="match_parent"
