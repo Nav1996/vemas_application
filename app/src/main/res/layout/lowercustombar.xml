@@ -22,14 +22,14 @@
             <ImageButton
                 android:id="@+id/calender"
                 android:layout_width="50dp"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentBottom="true"
                 android:layout_gravity="start"
                 android:layout_marginStart="15dp"
                 android:layout_marginBottom="0dp"
                 android:background="@android:color/transparent"
-                android:src="@drawable/calendericon" />
+                android:src="@drawable/calender_black" />
 
             <ImageButton
                 android:id="@+id/jobcard"
@@ -65,7 +65,7 @@
                 android:layout_marginStart="15dp"
                 android:layout_marginBottom="0dp"
                 android:background="@android:color/transparent"
-                android:src="@drawable/vehiclesicon" />
+                android:src="@drawable/car_black" />
 
             <ImageButton
                 android:id="@+id/dashboard"
@@ -77,7 +77,7 @@
                 android:layout_marginStart="15dp"
                 android:layout_marginBottom="0dp"
                 android:background="@android:color/transparent"
-                android:src="@drawable/dashicon"/>
+                android:src="@drawable/dashboard_black"/>
 
         </LinearLayout>
 
