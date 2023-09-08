@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -39,10 +40,12 @@ public class bookingform extends Activity {
     private EditText emailAddressEditText;
     private EditText phoneNumberEditText;
     private EditText notesEditText;
+    private Button saveButton,cancelButton,updateButton;
     String accessToken = "";
     String id = "";
     String formattedStartDate = "";
     String formattedEndDate = "";
+    String update = "";
 
 
     @Override
@@ -53,7 +56,19 @@ public class bookingform extends Activity {
         id = getIntent().getStringExtra("id");
         formattedStartDate = getIntent().getStringExtra("startdate");
         formattedEndDate = getIntent().getStringExtra("enddate");
+        update =  getIntent().getStringExtra("update");
         fetchDataAndPopulateForm(accessToken,id);
+        saveButton = findViewById(R.id.saveButton);
+        cancelButton = findViewById(R.id.cancelButton);
+        updateButton = findViewById(R.id.updateButton);
+
+        if(update != null && update.equals("update")){
+            saveButton.setVisibility(View.GONE);
+
+        }else{
+            cancelButton.setVisibility(View.GONE);
+            updateButton.setVisibility(View.GONE);
+        }
 
         Spinner countrySpinner = findViewById(R.id.countrySpinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
@@ -80,15 +95,24 @@ public class bookingform extends Activity {
         phoneNumberEditText = findViewById(R.id.phoneNumberEditText);
         notesEditText = findViewById(R.id.notesEditText);
 
+
+
         // Find the ImageButton by its ID
-        ImageButton saveButton = findViewById(R.id.saveButton);
+        Button saveButton = findViewById(R.id.saveButton);
 
 // Set an OnClickListener for the ImageButton
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Call the createBooking function here
-                deleteBooking();
+                createBooking();
+            }
+        });
+
+        updateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                updateBooking();
             }
         });
 
@@ -150,9 +174,9 @@ public class bookingform extends Activity {
 
 
     private void createBooking() {
-
         String vehicleId = "0"; // Replace with the actual vehicle ID
-        String requestedDate = dateEditText.getText().toString();
+        String selectedDate = dateEditText.getText().toString();
+        String selectedTime = timeEditText.getText().toString();
         String customerId = "0"; // Replace with the actual customer ID
         String customerName = customerNameEditText.getText().toString();
         String customerEmail = emailAddressEditText.getText().toString();
@@ -162,45 +186,62 @@ public class bookingform extends Activity {
         String objectId = "BOOKING";
         String vehicleRegistrationNumber = vehicleRegistrationEditText.getText().toString();
         String status = "50";
+        String dateTimeString = selectedDate + "T" + selectedTime;
+        SimpleDateFormat inputFormat = new SimpleDateFormat("dd MMM yyyy'T'HH:mm", Locale.US);
+        SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        String requestedDate;
 
-        // Call the createBooking function from ApiClient
-        ApiClient.createBooking(accessToken, vehicleId, requestedDate, customerId,
-                customerName, customerEmail, customerMobile, notes,
-                customerPhone, objectId, vehicleRegistrationNumber, status,
-                new ApiClient.ApiResponseListener() {
-                    @Override
-                    public void onResponse(String response) {
-                        // Parse the JSON response
-                        try {
-                            JSONObject jsonResponse = new JSONObject(response);
-                            int statusCode = jsonResponse.getInt("statusCode");
+        try {
+            Date date = inputFormat.parse(dateTimeString);
+            requestedDate = outputFormat.format(date);
 
+            // Call the createBooking function from ApiClient
+            ApiClient.createBooking(accessToken, vehicleId, requestedDate, customerId,
+                    customerName, customerEmail, customerMobile, notes,
+                    customerPhone, objectId, vehicleRegistrationNumber, status,
+                    new ApiClient.ApiResponseListener() {
+                        @Override
+                        public void onResponse(String response) {
+                            // Parse the JSON response
+                            try {
+                                JSONObject jsonResponse = new JSONObject(response);
+                                int statusCode = jsonResponse.getInt("statusCode");
 
-                            if (statusCode == 201) {
-                                // Success, show a toast with the success message
-                                showToast("Success");
-                                // Create an Intent to start the 'calender' activity
-                                Intent intent = new Intent(bookingform.this, calender.class);
+                                if (statusCode == 201) {
+                                    // Success, show a toast with the success message
+                                    showToast("Booking added successfully");
 
-                                // Pass the access token as an extra to the 'calender' activity
-                                intent.putExtra("accessToken", accessToken);
-                            } else {
-                                // Error, show a toast with the error message
-                                showToast("Error");
+                                    // Create an Intent to start the 'calendar' activity
+                                    Intent intent = new Intent(bookingform.this, calender.class);
+
+                                    // Pass the access token as an extra to the 'calendar' activity
+                                    intent.putExtra("accessToken", accessToken);
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                                    // Start the 'calendar' activity
+                                    startActivity(intent);
+                                    finish();
+                                } else {
+                                    // Error, show a toast with the error message
+                                    showToast("Error");
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                                // Handle JSON parsing error
+                                showToast("Error: Invalid JSON response");
                             }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                            // Handle JSON parsing error
-                            showToast("Error: Invalid JSON response");
                         }
-                    }
 
-                    @Override
-                    public void onError(Exception e) {
-                        showToast("Error: " + e.getMessage());
-                    }
-                });
+                        @Override
+                        public void onError(Exception e) {
+                            showToast("Error: " + e.getMessage());
+                        }
+                    });
+        } catch (ParseException e) {
+            e.printStackTrace();
+            showToast("Error: Invalid date or time format");
+        }
     }
+
     // Helper method to show a toast on the main UI thread
     private void showToast(final String message) {
         runOnUiThread(new Runnable() {
@@ -211,8 +252,7 @@ public class bookingform extends Activity {
         });
     }
 
-    // Inside your bookingform activity
-    // Inside your bookingform activity
+
     private void fetchDataAndPopulateForm(String accessToken, String bookingId) {
         Log.d("fetchDataAndPopulateForm", "Called with accessToken: " + accessToken + " and bookingId: " + bookingId);
 
@@ -268,31 +308,37 @@ public class bookingform extends Activity {
 
 
     private void populateFormWithData(String response) {
-        try {
-            // Parse the JSON response
-            Log.d("response",response);
-            JSONObject jsonResponse = new JSONObject(response);
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    // Parse the JSON response
+                    Log.d("response", response);
+                    JSONObject jsonResponse = new JSONObject(response);
 
-            // Extract data from the JSON response and populate your form fields
-            String vehicleRegistrationNumber = jsonResponse.optString("vehicleRegistrationNumber", "");
-            String customerName = jsonResponse.optString("customerName", "");
-            String customerEmail = jsonResponse.optString("customerEmail", "");
-            String customerPhone = jsonResponse.optString("customerPhone", "");
-            String notes = jsonResponse.optString("notes", "");
+                    // Extract data from the JSON response and populate your form fields
+                    String vehicleRegistrationNumber = jsonResponse.optString("vehicleRegistrationNumber", "");
+                    String customerName = jsonResponse.optString("customerName", "");
+                    String customerEmail = jsonResponse.optString("customerEmail", "");
+                    String customerPhone = jsonResponse.optString("customerPhone", "");
+                    String notes = jsonResponse.optString("notes", "");
 
-            // Populate your form fields
-            vehicleRegistrationEditText.setText(vehicleRegistrationNumber);
-            customerNameEditText.setText(customerName);
-            emailAddressEditText.setText(customerEmail);
-            phoneNumberEditText.setText(customerPhone);
-            notesEditText.setText(notes);
+                    // Populate your form fields
+                    vehicleRegistrationEditText.setText(vehicleRegistrationNumber);
+                    customerNameEditText.setText(customerName);
+                    emailAddressEditText.setText(customerEmail);
+                    phoneNumberEditText.setText(customerPhone);
+                    notesEditText.setText(notes);
 
-            // You can populate other fields in a similar manner
-        } catch (JSONException e) {
-            e.printStackTrace();
-            showToast("Error: Invalid JSON response");
-        }
+                    // You can populate other fields in a similar manner
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    showToast("Error: Invalid JSON response");
+                }
+            }
+        });
     }
+
 
     private void deleteBooking() {
         // Call the deleteBooking function from ApiClient
@@ -341,6 +387,7 @@ public class bookingform extends Activity {
 
         // Get input data
         String requestedDate = dateEditText.getText().toString();
+        String requestedTime = timeEditText.getText().toString();
         String customerName = customerNameEditText.getText().toString();
         String customerEmail = emailAddressEditText.getText().toString();
         String customerMobile = phoneNumberEditText.getText().toString();
@@ -348,6 +395,7 @@ public class bookingform extends Activity {
         String customerPhone = phoneNumberEditText.getText().toString();
         String vehicleRegistrationNumber = vehicleRegistrationEditText.getText().toString();
         String status = "50"; // Replace with the desired status code
+        String dateTimeString = requestedDate + "T" + requestedTime;
 
 
 
@@ -358,14 +406,18 @@ public class bookingform extends Activity {
             showToast("Please fill in all required fields");
             return;
         }
+        Log.d("selectedTime", requestedTime);
+        Log.d("selectedDate", requestedDate);
 
         // Format the date in the desired format
         SimpleDateFormat inputFormat = new SimpleDateFormat("dd MMM yyyy", Locale.US); // Specify the input date format
         SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 
+
         try {
-            Date date = inputFormat.parse(requestedDate);
+            Date date = inputFormat.parse(dateTimeString);
             requestedDate = outputFormat.format(date);
+            requestedDate = requestedDate.substring(0, 11) + requestedTime + requestedDate.substring(16);
         } catch (ParseException e) {
             e.printStackTrace();
             showToast("Error: Invalid date format");
@@ -387,6 +439,15 @@ public class bookingform extends Activity {
                     if (statusCode == 200) {
                         // Success, show a toast with the success message
                         showToast("Booking updated successfully");
+                        Intent intent = new Intent(bookingform.this, calender.class);
+
+                        // Pass the access token as an extra to the 'calendar' activity
+                        intent.putExtra("accessToken", accessToken);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                        // Start the 'calendar' activity
+                        startActivity(intent);
+                        finish();
+
                     } else {
                         // Error, show a toast with the error message
                         showToast("Error: " + jsonResponse.optString("errorMessage", "Unknown error"));
