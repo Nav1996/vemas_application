@@ -247,6 +247,7 @@ public class calender extends AppCompatActivity {
         ImageButton profileButton = findViewById(R.id.profile);
         ImageButton vehicleButton = findViewById(R.id.vehicle);
         ImageButton dashboardButton = findViewById(R.id.dashboard);
+        ImageButton addButton = findViewById(R.id.addButton);
         calenderButton.setEnabled(false);
 
         // Set click listeners for each button
@@ -264,6 +265,16 @@ public class calender extends AppCompatActivity {
         });
 
         jobcardButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Define the action for the jobcardButton here
+                // For example, open a job card activity
+                Intent intent = new Intent(calender.this, bookingform.class);
+                intent.putExtra("accessToken", accessToken);
+                startActivity(intent);
+            }
+        });
+        addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Define the action for the jobcardButton here

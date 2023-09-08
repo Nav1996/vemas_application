@@ -20,6 +20,7 @@
 
             android:name=".calender"
             android:theme="@style/Theme.VemasApplication"
+            android:windowSoftInputMode="adjustPan">
             android:exported="true" >
 
 
