@@ -1,7 +1,9 @@
 package com.example.vemasapplication;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -13,6 +15,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -41,6 +44,7 @@ public class bookingform extends Activity {
     private EditText phoneNumberEditText;
     private EditText notesEditText;
     private Button saveButton,cancelButton,updateButton;
+    private ImageButton deleteButton;
     String accessToken = "";
     String id = "";
     String formattedStartDate = "";
@@ -61,7 +65,7 @@ public class bookingform extends Activity {
         saveButton = findViewById(R.id.saveButton);
         cancelButton = findViewById(R.id.cancelButton);
         updateButton = findViewById(R.id.updateButton);
-
+        deleteButton = findViewById(R.id.deleteButton);
         if(update != null && update.equals("update")){
             saveButton.setVisibility(View.GONE);
 
@@ -70,7 +74,17 @@ public class bookingform extends Activity {
             updateButton.setVisibility(View.GONE);
         }
 
-        Spinner countrySpinner = findViewById(R.id.countrySpinner);
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Show the confirmation dialog
+                deleteBooking();
+            }
+        });
+
+// Method to show the confirmation dialog
+
+        countrySpinner = findViewById(R.id.countrySpinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
                 this, R.array.countries, android.R.layout.simple_spinner_item
         );
@@ -88,7 +102,7 @@ public class bookingform extends Activity {
         updateDateAndTimeFields();
 
         // Initialize other UI elements
-        countrySpinner = findViewById(R.id.countrySpinner);
+
         vehicleRegistrationEditText = findViewById(R.id.vehicleRegistrationEditText);
         customerNameEditText = findViewById(R.id.customerNameEditText);
         emailAddressEditText = findViewById(R.id.emailAddressEditText);
@@ -116,6 +130,45 @@ public class bookingform extends Activity {
             }
         });
 
+    }
+    private void showConfirmationDialog(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        View dialogView = getLayoutInflater().inflate(R.layout.confirmation_dialog, null);
+        builder.setView(dialogView);
+
+        TextView dialogMessage = dialogView.findViewById(R.id.dialogMessage);
+        Button buttonYes = dialogView.findViewById(R.id.buttonYes);
+        Button buttonNo = dialogView.findViewById(R.id.buttonNo);
+
+        dialogMessage.setText("Are you sure you want to delete this item?");
+
+        AlertDialog dialog = builder.create();
+
+        buttonYes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                deleteBooking();
+                dialog.dismiss();
+                Intent intent = new Intent(bookingform.this, calender.class);
+
+                // Pass the access token as an extra to the 'calendar' activity
+                intent.putExtra("accessToken", accessToken);
+                intent.putExtra("delete", "delete");
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                // Start the 'calendar' activity
+                startActivity(intent);// Dismiss the dialog
+            }
+        });
+
+        buttonNo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss(); // Dismiss the dialog when "No" is clicked
+            }
+        });
+
+        // Show the dialog
+        dialog.show();
     }
 
     public void openDatePicker(View view) {
@@ -180,9 +233,9 @@ public class bookingform extends Activity {
         String customerId = "0"; // Replace with the actual customer ID
         String customerName = customerNameEditText.getText().toString();
         String customerEmail = emailAddressEditText.getText().toString();
-        String customerMobile = phoneNumberEditText.getText().toString();
+        String customerMobile =countrySpinner.getSelectedItem().toString()+ phoneNumberEditText.getText().toString();
         String notes = notesEditText.getText().toString();
-        String customerPhone = phoneNumberEditText.getText().toString();
+        String customerPhone = countrySpinner.getSelectedItem().toString()+ phoneNumberEditText.getText().toString();
         String objectId = "BOOKING";
         String vehicleRegistrationNumber = vehicleRegistrationEditText.getText().toString();
         String status = "50";
@@ -216,8 +269,9 @@ public class bookingform extends Activity {
 
                                     // Pass the access token as an extra to the 'calendar' activity
                                     intent.putExtra("accessToken", accessToken);
-                                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                                    // Start the 'calendar' activity
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    intent.putExtra("operationResult", "success");
+
                                     startActivity(intent);
                                     finish();
                                 } else {
@@ -303,45 +357,107 @@ public class bookingform extends Activity {
         });
     }
 
-
-
-
-
     private void populateFormWithData(String response) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    // Parse the JSON response
-                    Log.d("response", response);
-                    JSONObject jsonResponse = new JSONObject(response);
+        try {
+            // Parse the JSON response
+            Log.d("response", response);
+            JSONObject jsonResponse = new JSONObject(response);
 
-                    // Extract data from the JSON response and populate your form fields
-                    String vehicleRegistrationNumber = jsonResponse.optString("vehicleRegistrationNumber", "");
-                    String customerName = jsonResponse.optString("customerName", "");
-                    String customerEmail = jsonResponse.optString("customerEmail", "");
-                    String customerPhone = jsonResponse.optString("customerPhone", "");
-                    String notes = jsonResponse.optString("notes", "");
+            // Extract data from the JSON response and populate your form fields
+            String vehicleRegistrationNumber = jsonResponse.optString("vehicleRegistrationNumber", "");
+            String customerName = jsonResponse.optString("customerName", "");
+            String customerEmail = jsonResponse.optString("customerEmail", "");
+            String customerPhone = jsonResponse.optString("customerPhone", "");
+            String notes = jsonResponse.optString("notes", "");
 
+            // Use runOnUiThread to update UI elements
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
                     // Populate your form fields
                     vehicleRegistrationEditText.setText(vehicleRegistrationNumber);
                     customerNameEditText.setText(customerName);
                     emailAddressEditText.setText(customerEmail);
-                    phoneNumberEditText.setText(customerPhone);
+
+                    // Extract the country code from the phone number
+                    String countryCode = getCountryCodeFromPhoneNumber(customerPhone);
+
+                    // Set the value of the country spinner
+                    if (!TextUtils.isEmpty(countryCode)) {
+                        int position = getCountryPosition(countryCode);
+                        if (position != -1) {
+                            countrySpinner.setSelection(position);
+                        }
+                    }
+
+                    // Set the remaining part of the phone number (excluding country code) in phoneNumberEditText
+                    String remainingPhoneNumber = getRemainingPhoneNumber(customerPhone);
+                    phoneNumberEditText.setText(remainingPhoneNumber);
+
                     notesEditText.setText(notes);
 
                     // You can populate other fields in a similar manner
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    showToast("Error: Invalid JSON response");
                 }
-            }
-        });
+            });
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+            showToast("Error: Invalid JSON response");
+        }
     }
 
 
+    // Helper method to extract the country code from the phone number
+    private String getCountryCodeFromPhoneNumber(String phoneNumber) {
+        if (phoneNumber != null && phoneNumber.length() >= 2) {
+            return phoneNumber.substring(0, 2);
+        }
+        return "";
+    }
+    private int getCountryPosition(String countryCode) {
+        ArrayAdapter<CharSequence> adapter = (ArrayAdapter<CharSequence>) countrySpinner.getAdapter();
+        if (adapter != null) {
+            for (int i = 0; i < adapter.getCount(); i++) {
+                if (adapter.getItem(i).toString().startsWith(countryCode)) {
+                    return i;
+                }
+            }
+        }
+        return -1;
+    }
+
+
+    // Helper method to get the remaining part of the phone number (excluding country code)
+    private String getRemainingPhoneNumber(String phoneNumber) {
+        if (phoneNumber != null && phoneNumber.length() >= 2) {
+            return phoneNumber.substring(2);
+        }
+        return "";
+    }
+
     private void deleteBooking() {
-        // Call the deleteBooking function from ApiClient
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Are you sure you want to delete this booking?");
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // User clicked Yes, proceed with the deletion
+                performDeleteBooking();
+            }
+        });
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // User clicked No, do nothing
+                dialog.dismiss();
+            }
+        });
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
+
+    private void performDeleteBooking() {
         ApiClient.deleteBooking(accessToken, id, new ApiClient.ApiResponseListener() {
             @Override
             public void onResponse(String response) {
@@ -356,8 +472,6 @@ public class bookingform extends Activity {
                         if (statusCode == 200) {
                             // Success, show the message from the response
                             showToast(message);
-
-                            // Optionally, navigate to another activity or perform any additional actions here
                         } else {
                             // Error, show a toast with the error message
                             showToast("Error: " + message);
@@ -371,6 +485,18 @@ public class bookingform extends Activity {
                     // Handle JSON parsing error
                     showToast("Error: Invalid JSON response");
                 }
+
+
+                Intent intent = new Intent(bookingform.this, calender.class);
+
+                // Pass the access token as an extra to the 'calendar' activity
+                intent.putExtra("accessToken", accessToken);
+                intent.putExtra("delete", "delete");
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                // Start the 'calendar' activity
+                startActivity(intent);
+
+                // Optionally, navigate to another activity or perform any additional actions here
             }
 
             @Override
@@ -379,6 +505,7 @@ public class bookingform extends Activity {
             }
         });
     }
+
 
 
 
@@ -443,7 +570,7 @@ public class bookingform extends Activity {
 
                         // Pass the access token as an extra to the 'calendar' activity
                         intent.putExtra("accessToken", accessToken);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                         // Start the 'calendar' activity
                         startActivity(intent);
                         finish();
