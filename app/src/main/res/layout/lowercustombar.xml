@@ -29,7 +29,7 @@
                 android:layout_marginStart="15dp"
                 android:layout_marginBottom="0dp"
                 android:background="@android:color/transparent"
-                android:src="@drawable/calender_black" />
+                android:src="@drawable/white_profile" />
 
             <ImageButton
                 android:id="@+id/jobcard"

@@ -277,8 +277,11 @@ public class calender extends AppCompatActivity {
         calenderButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Define the action for the calenderButton here
-                // For example, open a calendar activity
+
+                calenderButton.setBackgroundResource(R.drawable.white_profile);
+                calenderButton.invalidate();
+                calenderButton.requestLayout();
+
 
                 Intent intent = new Intent(calender.this, calender.class);
                 intent.putExtra("accessToken", accessToken);
