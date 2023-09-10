@@ -87,6 +87,7 @@ public class bookingform extends Activity {
             saveButton.setVisibility(View.GONE);
 
         }else{
+            deleteButton.setVisibility(View.GONE);
             cancelButton.setVisibility(View.GONE);
             updateButton.setVisibility(View.GONE);
         }
