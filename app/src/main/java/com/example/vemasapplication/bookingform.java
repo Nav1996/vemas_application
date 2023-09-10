@@ -44,7 +44,7 @@ public class bookingform extends Activity {
     private EditText phoneNumberEditText;
     private EditText notesEditText;
     private Button saveButton,cancelButton,updateButton;
-    private ImageButton deleteButton;
+    private ImageButton deleteButton,arrowButton;
     String accessToken = "";
     String id = "";
     String formattedStartDate = "";
@@ -66,6 +66,23 @@ public class bookingform extends Activity {
         cancelButton = findViewById(R.id.cancelButton);
         updateButton = findViewById(R.id.updateButton);
         deleteButton = findViewById(R.id.deleteButton);
+        arrowButton = findViewById(R.id.arrowButton);
+
+        arrowButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                // Create an Intent to start the 'calendar' activity
+                Intent intent = new Intent(bookingform.this, calender.class);
+
+                // Pass the access token as an extra to the 'calendar' activity
+                intent.putExtra("accessToken", accessToken);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+
+
+            }
+        });
         if(update != null && update.equals("update")){
             saveButton.setVisibility(View.GONE);
 

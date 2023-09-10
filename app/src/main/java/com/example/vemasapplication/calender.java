@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Button;
 import android.widget.CalendarView;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -29,6 +30,8 @@ public class calender extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calender);
         String accessToken = getIntent().getStringExtra("accessToken");
@@ -43,6 +46,13 @@ public class calender extends AppCompatActivity {
 
         CalendarView calendarView = findViewById(R.id.calendarView);
         LinearLayout bookingDetailsLayout = findViewById(R.id.linearLayoutContainer);
+        Button logout = findViewById(R.id.logoutButton);
+        logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showLogoutConfirmationDialog();
+            }
+        });
 
         Calendar currentDate = Calendar.getInstance();
 
