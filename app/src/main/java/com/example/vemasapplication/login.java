@@ -66,6 +66,7 @@ public class login extends AppCompatActivity {
 
                                                 // Pass the access token as an extra to the 'calender' activity
                                                 intent.putExtra("accessToken", accessToken);
+                                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
 
                                                 // Start the 'calender' activity
                                                 startActivity(intent);
