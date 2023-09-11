@@ -27,7 +27,7 @@
                 android:layout_alignParentBottom="true"
                 android:layout_gravity="start"
                 android:layout_marginStart="15dp"
-                android:layout_marginBottom="0dp"
+                android:layout_marginBottom="5dp"
                 android:background="@android:color/transparent"
                 android:src="@drawable/calender_white"
                 android:paddingStart="15dp"/>
@@ -40,7 +40,7 @@
                 android:layout_alignParentBottom="true"
                 android:layout_gravity="start"
                 android:layout_marginStart="15dp"
-                android:layout_marginBottom="-5dp"
+                android:layout_marginBottom="0dp"
                 android:background="@android:color/transparent"
                 android:src="@drawable/jobcardicon" />
 
@@ -52,7 +52,7 @@
                 android:layout_alignParentBottom="true"
                 android:layout_gravity="start"
                 android:layout_marginStart="15dp"
-                android:layout_marginBottom="-5dp"
+                android:layout_marginBottom="0dp"
                 android:background="@android:color/transparent"
                 android:src="@drawable/profileicon" />
 
@@ -64,7 +64,7 @@
                 android:layout_alignParentBottom="true"
                 android:layout_gravity="start"
                 android:layout_marginStart="15dp"
-                android:layout_marginBottom="-5dp"
+                android:layout_marginBottom="0dp"
                 android:background="@android:color/transparent"
                 android:src="@drawable/car_black" />
 
@@ -72,11 +72,11 @@
                 android:id="@+id/dashboard"
                 android:layout_width="70dp"
                 android:layout_height="match_parent"
-                android:layout_alignParentend="true"
+                android:layout_alignParentStart="true"
                 android:layout_alignParentBottom="true"
-                android:layout_gravity="end"
+                android:layout_gravity="start"
                 android:layout_marginStart="15dp"
-                android:layout_marginBottom="-5dp"
+                android:layout_marginBottom="0dp"
                 android:background="@android:color/transparent"
                 android:src="@drawable/dashboard_black"
                 android:paddingEnd="15dp"/>
