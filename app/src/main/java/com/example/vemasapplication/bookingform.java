@@ -68,6 +68,7 @@ public class bookingform extends Activity {
         deleteButton = findViewById(R.id.deleteButton);
         arrowButton = findViewById(R.id.arrowButton);
 
+
         arrowButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -251,16 +252,41 @@ public class bookingform extends Activity {
         String customerId = "0"; // Replace with the actual customer ID
         String customerName = customerNameEditText.getText().toString();
         String customerEmail = emailAddressEditText.getText().toString();
-        String customerMobile =countrySpinner.getSelectedItem().toString()+ phoneNumberEditText.getText().toString();
+        String customerMobile = countrySpinner.getSelectedItem().toString() + phoneNumberEditText.getText().toString();
         String notes = notesEditText.getText().toString();
-        String customerPhone = countrySpinner.getSelectedItem().toString()+ phoneNumberEditText.getText().toString();
+        String customerPhone = countrySpinner.getSelectedItem().toString() + phoneNumberEditText.getText().toString();
         String objectId = "BOOKING";
         String vehicleRegistrationNumber = vehicleRegistrationEditText.getText().toString();
         String status = "50";
         String dateTimeString = selectedDate + "T" + selectedTime;
+
+        // Validate the date format
+        SimpleDateFormat inputDateFormat = new SimpleDateFormat("dd MMM yyyy", Locale.getDefault());
+        inputDateFormat.setLenient(false);
+
+        try {
+            Date date = inputDateFormat.parse(selectedDate);
+            if (!inputDateFormat.format(date).equals(selectedDate)) {
+                // The date format is invalid
+                showToast("Invalid date format. Please use dd MMM yyyy format.");
+                return;
+            }
+        } catch (ParseException e) {
+            // Invalid date format
+            showToast("Invalid date format. Please use dd MMM yyyy format.");
+            return;
+        }
+
         SimpleDateFormat inputFormat = new SimpleDateFormat("dd MMM yyyy'T'HH:mm", Locale.US);
         SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
         String requestedDate;
+
+
+        if (TextUtils.isEmpty(customerName) || TextUtils.isEmpty(customerEmail) ||
+                TextUtils.isEmpty(customerMobile) || TextUtils.isEmpty(vehicleRegistrationNumber)) {
+            showToast("Please fill in all required fields");
+            return;
+        }
 
         try {
             Date date = inputFormat.parse(dateTimeString);
@@ -313,6 +339,7 @@ public class bookingform extends Activity {
             showToast("Error: Invalid date or time format");
         }
     }
+
 
     // Helper method to show a toast on the main UI thread
     private void showToast(final String message) {
@@ -374,7 +401,6 @@ public class bookingform extends Activity {
             }
         });
     }
-
     private void populateFormWithData(String response) {
         try {
             // Parse the JSON response
@@ -387,8 +413,29 @@ public class bookingform extends Activity {
             String customerEmail = jsonResponse.optString("customerEmail", "");
             String customerPhone = jsonResponse.optString("customerPhone", "");
             String notes = jsonResponse.optString("notes", "");
+            String requestedDateAndTime = jsonResponse.optString("requestedDate", ""); // Replace "requestedDate" with the actual field name in your JSON response for date and time
+
+            // Split the requestedDateAndTime into date and time parts
+            String[] dateAndTimeParts = requestedDateAndTime.split("T");
+            String datePart = dateAndTimeParts[0];
+            String timePart = dateAndTimeParts[1];
+
+            // Format datePart into the desired format "dd MMM yyyy"
+            SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+            SimpleDateFormat outputFormat = new SimpleDateFormat("dd MMM yyyy", Locale.US);
+
+            try {
+                Date date = inputFormat.parse(datePart);
+                datePart = outputFormat.format(date);
+            } catch (ParseException e) {
+                e.printStackTrace();
+                showToast("Error: Invalid date format");
+                return;
+            }
 
             // Use runOnUiThread to update UI elements
+            final String finalDatePart = datePart; // Declare datePart as final
+
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -414,6 +461,10 @@ public class bookingform extends Activity {
 
                     notesEditText.setText(notes);
 
+                    // Set formatted date and time fields
+                    dateEditText.setText(finalDatePart);
+                    timeEditText.setText(timePart);
+
                     // You can populate other fields in a similar manner
                 }
             });
@@ -423,6 +474,7 @@ public class bookingform extends Activity {
             showToast("Error: Invalid JSON response");
         }
     }
+
 
 
     // Helper method to extract the country code from the phone number

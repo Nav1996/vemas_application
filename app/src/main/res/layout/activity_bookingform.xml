@@ -148,6 +148,7 @@
                     android:layout_weight="1"
                     android:background="@drawable/rounded_box"
                     android:elevation="2dp"
+                    android:inputType="none"
                     android:hint="day:month:year"
                     android:maxWidth="120dp"
                     android:padding="10dp"

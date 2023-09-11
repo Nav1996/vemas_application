@@ -54,6 +54,18 @@ public class calender extends AppCompatActivity {
             }
         });
 
+        calendarView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    // Remove focus to disable the keyboard
+                    v.clearFocus();
+                }
+            }
+        });
+
+
+
         Calendar currentDate = Calendar.getInstance();
 
         // Set the time to midnight (00:00) for startDate
@@ -110,6 +122,15 @@ public class calender extends AppCompatActivity {
                                             TextView vehicleNumberTextView = bookingDetailsItem.findViewById(R.id.vehicleNumberTextView);
                                             TextView ownerNameTextView = bookingDetailsItem.findViewById(R.id.ownerNameTextView);
                                             TextView timeTextView = bookingDetailsItem.findViewById(R.id.timeTextView);
+                                            timeTextView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                                                @Override
+                                                public void onFocusChange(View v, boolean hasFocus) {
+                                                    if (hasFocus) {
+                                                        // Remove focus to disable the keyboard
+                                                        v.clearFocus();
+                                                    }
+                                                }
+                                            });
 
                                             vehicleNumberTextView.setText("" + vehicleNumber);
                                             ownerNameTextView.setText("" + ownerName);
