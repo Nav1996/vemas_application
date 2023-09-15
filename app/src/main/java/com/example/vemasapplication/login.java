@@ -1,4 +1,5 @@
 package com.example.vemasapplication;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,6 +19,8 @@ public class login extends AppCompatActivity {
 
     private EditText emailEditText;
     private EditText passwordEditText;
+    private ProgressDialog progressDialog;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +31,9 @@ public class login extends AppCompatActivity {
         passwordEditText = findViewById(R.id.passwordEditText);
 
         ImageButton loginImageButton = findViewById(R.id.loginButton);
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Logging in...");
+        progressDialog.setCancelable(false);
 
         loginImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -42,6 +48,7 @@ public class login extends AppCompatActivity {
                     Toast.makeText(login.this, "Email and password are required.", Toast.LENGTH_SHORT).show();
                 } else {
                     // Call the signIn function with the email and password
+                    progressDialog.show();
                     ApiClient.signIn(email, password, new ApiClient.ApiResponseListener() {
                         @Override
                         public void onResponse(final String response) {
@@ -82,7 +89,9 @@ public class login extends AppCompatActivity {
                                     } else {
                                         // Show an error message
                                         Toast.makeText(login.this, "Login failed. Invalid credentials.", Toast.LENGTH_SHORT).show();
+                                        progressDialog.dismiss();
                                     }
+                                    progressDialog.dismiss();
                                 }
                             });
                         }
@@ -94,6 +103,7 @@ public class login extends AppCompatActivity {
                                 @Override
                                 public void run() {
                                     Toast.makeText(login.this, "Login failed. Invalid credentials.", Toast.LENGTH_SHORT).show();
+                                    progressDialog.dismiss();
                                 }
                             });
                         }

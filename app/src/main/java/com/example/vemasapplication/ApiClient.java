@@ -183,6 +183,102 @@ import java.net.URL;
         });
     }
 
+        public static void getCustomerInfo(String accessToken, String apiUrl, ApiResponseListener listener) {
+            AsyncTask.execute(() -> {
+                try {
+                    // Create URL
+                    URL url = new URL(apiUrl);
+
+                    // Create connection
+                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                    connection.setRequestMethod("GET");
+                    connection.setRequestProperty("Content-Type", "application/json");
+
+                    // Set the Authorization header with the access token
+                    connection.setRequestProperty("Authorization", accessToken);
+
+                    // Get response
+                    int responseCode = connection.getResponseCode();
+
+                    if (responseCode == HttpURLConnection.HTTP_OK) {
+                        BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                        String inputLine;
+                        StringBuilder response = new StringBuilder();
+
+                        while ((inputLine = in.readLine()) != null) {
+                            response.append(inputLine);
+                        }
+                        in.close();
+
+                        // Notify the listener with the response
+                        listener.onResponse(response.toString());
+                    } else {
+                        // Handle the error
+                        listener.onError(new Exception("HTTP Error: " + responseCode));
+                    }
+
+                } catch (IOException e) {
+                    // Handle the exception
+                    listener.onError(e);
+                }
+            });
+        }
+
+
+        public static void searchVehicles(String accessToken, String pageSize, String pageNumber, String customerId,
+                                          String makeId, String modelId, String regNo, String status, String commonSearch,
+                                          ApiResponseListener listener) {
+            AsyncTask.execute(() -> {
+                try {
+                    // Create URL
+                    String apiUrl = "https://dev.vemas.com.au/api/vehicles?" +
+                            "pageSize=" + pageSize +
+                            "&pageNumber=" + pageNumber +
+                            "&CustomerId=" + customerId +
+                            "&MakeId=" + makeId +
+                            "&ModelId=" + modelId +
+                            "&RegNo=" + regNo +
+                            "&StatusId=" + status +
+                            "&commonSearch=" + commonSearch;
+
+                    URL url = new URL(apiUrl);
+
+                    // Create connection
+                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                    connection.setRequestMethod("GET");
+                    connection.setRequestProperty("Content-Type", "application/json");
+
+                    // Set the Authorization header with the access token
+                    connection.setRequestProperty("Authorization", accessToken);
+
+                    // Get response
+                    int responseCode = connection.getResponseCode();
+
+                    if (responseCode == HttpURLConnection.HTTP_OK) {
+                        BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                        String inputLine;
+                        StringBuilder response = new StringBuilder();
+
+                        while ((inputLine = in.readLine()) != null) {
+                            response.append(inputLine);
+                        }
+                        in.close();
+
+                        // Notify the listener with the response
+                        listener.onResponse(response.toString());
+                    } else {
+                        // Handle the error
+                        listener.onError(new Exception("HTTP Error: " + responseCode));
+                    }
+
+                } catch (IOException e) {
+                    // Handle the exception
+                    listener.onError(e);
+                }
+            });
+        }
+
+
         public static void deleteBooking(String accessToken, String bookingId, ApiResponseListener listener) {
             AsyncTask.execute(() -> {
                 try {

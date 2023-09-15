@@ -2,11 +2,14 @@ package com.example.vemasapplication;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -50,6 +53,7 @@ public class bookingform extends Activity {
     String formattedStartDate = "";
     String formattedEndDate = "";
     String update = "";
+    private ProgressDialog progressDialog;
 
 
     @Override
@@ -67,6 +71,8 @@ public class bookingform extends Activity {
         updateButton = findViewById(R.id.updateButton);
         deleteButton = findViewById(R.id.deleteButton);
         arrowButton = findViewById(R.id.arrowButton);
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Loading...");
 
 
         arrowButton.setOnClickListener(new View.OnClickListener() {
@@ -97,47 +103,60 @@ public class bookingform extends Activity {
             @Override
             public void onClick(View v) {
                 // Show the confirmation dialog
+
+                progressDialog.show();
+
                 deleteBooking();
             }
         });
-
-// Method to show the confirmation dialog
-
         countrySpinner = findViewById(R.id.countrySpinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
                 this, R.array.countries, android.R.layout.simple_spinner_item
         );
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         countrySpinner.setAdapter(adapter);
-
-        // Initialize references to your date and time EditText fields
         dateEditText = findViewById(R.id.dateEditText);
         timeEditText = findViewById(R.id.timeEditText);
-
-        // Initialize the Calendar instance
         calendar = Calendar.getInstance();
 
-        // Set initial date and time in the EditText fields
         updateDateAndTimeFields();
-
-        // Initialize other UI elements
 
         vehicleRegistrationEditText = findViewById(R.id.vehicleRegistrationEditText);
         customerNameEditText = findViewById(R.id.customerNameEditText);
         emailAddressEditText = findViewById(R.id.emailAddressEditText);
         phoneNumberEditText = findViewById(R.id.phoneNumberEditText);
         notesEditText = findViewById(R.id.notesEditText);
-
-
-
-        // Find the ImageButton by its ID
         Button saveButton = findViewById(R.id.saveButton);
 
-// Set an OnClickListener for the ImageButton
+        vehicleRegistrationEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // This method is not needed, but you can implement it if necessary
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // This method is called when the text in the field changes
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                // This method is called after the text has changed
+                String searchText = s.toString();
+                if (!TextUtils.isEmpty(searchText)) {
+                    // If the text is not empty, call the API to search for vehicles
+                    searchVehicles(searchText);
+                }
+            }
+        });
+
+
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Call the createBooking function here
+
+                progressDialog.show();
                 createBooking();
             }
         });
@@ -145,49 +164,127 @@ public class bookingform extends Activity {
         updateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                progressDialog.show();
+
                 updateBooking();
             }
         });
 
     }
-    private void showConfirmationDialog(){
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        View dialogView = getLayoutInflater().inflate(R.layout.confirmation_dialog, null);
-        builder.setView(dialogView);
+    private void searchVehicles(String searchQuery) {
+        String pageSize = "20"; // Specify the desired page size
+        String pageNumber = "1"; // Specify the desired page number
 
-        TextView dialogMessage = dialogView.findViewById(R.id.dialogMessage);
-        Button buttonYes = dialogView.findViewById(R.id.buttonYes);
-        Button buttonNo = dialogView.findViewById(R.id.buttonNo);
+        String regNo = searchQuery; // Use the searchQuery as the registration number
 
-        dialogMessage.setText("Are you sure you want to delete this item?");
-
-        AlertDialog dialog = builder.create();
-
-        buttonYes.setOnClickListener(new View.OnClickListener() {
+        // Make the API call using ApiClient with the specified parameters
+        ApiClient.searchVehicles(accessToken, pageSize, pageNumber, "", "", "", regNo, "", "", new ApiClient.ApiResponseListener() {
             @Override
-            public void onClick(View v) {
-                deleteBooking();
-                dialog.dismiss();
-                Intent intent = new Intent(bookingform.this, calender.class);
+            public void onResponse(String response) {
+                Log.d("vehicl", response.toString());
 
-                // Pass the access token as an extra to the 'calendar' activity
-                intent.putExtra("accessToken", accessToken);
-                intent.putExtra("delete", "delete");
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                // Start the 'calendar' activity
-                startActivity(intent);// Dismiss the dialog
+                try {
+                    JSONObject jsonResponse = new JSONObject(response);
+                    if (jsonResponse.has("result")) {
+                        JSONObject resultObject = jsonResponse.getJSONObject("result");
+                        Log.d("result", resultObject.toString());
+
+
+                        if (resultObject.length() > 0) {
+
+                            JSONArray nestedResultArray = resultObject.getJSONArray("result");
+                            customerNameEditText.setText("");
+                            emailAddressEditText.setText("");
+                            phoneNumberEditText.setText("");
+
+                            for (int i = 0; i < nestedResultArray.length(); i++) {
+                                JSONObject nestedResultObject = nestedResultArray.getJSONObject(i);
+
+
+                                String customerId = nestedResultObject.optString("customerId");
+                                Log.d("Nested Customer ID", customerId);
+
+                                String customerApiUrl = "https://dev.vemas.com.au/api/customers/" + customerId;
+
+                                // Make the API call to fetch customer information
+                                ApiClient.getCustomerInfo(accessToken, customerApiUrl, new ApiClient.ApiResponseListener() {
+                                    @Override
+                                    public void onResponse(String customerResponse) {
+                                        try {
+                                            JSONObject customerInfo = new JSONObject(customerResponse);
+
+                                            // Extract customer name
+                                            String firstName = customerInfo.optString("firstName");
+                                            String lastName = customerInfo.optString("lastName");
+                                            String customerName = firstName + " " + lastName; // Combine first name and last name
+
+                                            // Extract email address
+                                            String emailAddress = customerInfo.optString("emailAddress");
+
+                                            // Extract phone number
+                                            String mobilePhone = customerInfo.optString("mobilePhone");
+
+                                            // Now you have the customer name, email, and phone number
+                                            // You can set these values in your UI or perform any other necessary actions
+                                            Log.d("Customer Name", customerName);
+                                            Log.d("Email Address", emailAddress);
+                                            Log.d("Phone Number", mobilePhone);
+
+                                            // Example: Setting the customer name, email, and phone number in TextViews
+                                            // Assuming you have TextViews with IDs: customerNameTextView, emailAddressTextView, phoneNumberTextView
+                                            runOnUiThread(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    customerNameEditText.setText(customerName);
+                                                    emailAddressEditText.setText(emailAddress);
+                                                    String countryCode = getCountryCodeFromPhoneNumber(mobilePhone);
+
+                                                    // Set the value of the country spinner
+                                                    if (!TextUtils.isEmpty(countryCode)) {
+                                                        int position = getCountryPosition(countryCode);
+                                                        if (position != -1) {
+                                                            countrySpinner.setSelection(position);
+                                                        }
+                                                    }
+
+                                                    // Set the remaining part of the phone number (excluding country code) in phoneNumberEditText
+                                                    String remainingPhoneNumber = getRemainingPhoneNumber(mobilePhone);
+                                                    phoneNumberEditText.setText(remainingPhoneNumber);
+                                                }
+                                            });
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                            showToast("Error: Invalid JSON response for customer information");
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onError(Exception e) {
+                                        showToast("Error fetching customer information: " + e.getMessage());
+                                    }
+                                });
+                            }
+                        } else {
+                            // No results found in the response
+
+                            Log.d("vehicle", "No matching vehicles found.");
+                        }
+                    } else {
+                        // "result" object not present in the response
+                        Log.d("vehicle", "No 'result' object found in the response.");
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    showToast("Error: Invalid JSON response");
+                }
+            }
+
+            @Override
+            public void onError(Exception e) {
+                showToast("Error: " + e.getMessage());
             }
         });
-
-        buttonNo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss(); // Dismiss the dialog when "No" is clicked
-            }
-        });
-
-        // Show the dialog
-        dialog.show();
     }
 
     public void openDatePicker(View view) {
@@ -338,6 +435,7 @@ public class bookingform extends Activity {
             e.printStackTrace();
             showToast("Error: Invalid date or time format");
         }
+        progressDialog.dismiss();
     }
 
 
@@ -500,7 +598,7 @@ public class bookingform extends Activity {
     // Helper method to get the remaining part of the phone number (excluding country code)
     private String getRemainingPhoneNumber(String phoneNumber) {
         if (phoneNumber != null && phoneNumber.length() >= 2) {
-            return phoneNumber.substring(2);
+            return phoneNumber.substring(3);
         }
         return "";
     }
@@ -525,6 +623,7 @@ public class bookingform extends Activity {
 
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
+        progressDialog.dismiss();
     }
 
     private void performDeleteBooking() {
@@ -661,6 +760,7 @@ public class bookingform extends Activity {
                 showToast("Error: " + e.getMessage());
             }
         });
+        progressDialog.dismiss();
     }
 
 
