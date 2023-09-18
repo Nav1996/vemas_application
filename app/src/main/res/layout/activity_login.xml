@@ -1,146 +1,148 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- Background Color -->
-
-    <View
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="700dp"
-        android:layout_alignParentStart="true"
-        android:background="#4278B7" />
+        android:layout_height="wrap_content">
 
-       <View
-        android:id="@+id/whiteSpaceArea"
-        android:layout_width="match_parent"
-        android:layout_marginTop="450dp"
-        android:layout_height="300dp"
-        android:background="#FFFFFF" />
+        <!-- Background Color -->
 
-    <!-- Logo Image -->
-    <!-- Replace with your logo image -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="700dp"
+            android:layout_alignParentStart="true"
+            android:background="#4278B7" />
 
-    <ImageView
-        android:id="@+id/logoImage"
-        android:layout_width="345dp"
-        android:layout_height="76dp"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="261dp"
-        android:src="@drawable/workshop_software_vemas_logo_2" />
+        <View
+            android:id="@+id/whiteSpaceArea"
+            android:layout_width="match_parent"
+            android:layout_marginTop="450dp"
+            android:layout_height="300dp"
+            android:background="#FFFFFF" />
 
-
-    <FrameLayout
-        android:id="@+id/whitecontainer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/logoImage"
-        android:layout_centerInParent="true">>
+        <!-- Logo Image -->
+        <!-- Replace with your logo image -->
 
         <ImageView
-            android:id="@+id/recbackground"
+            android:id="@+id/logoImage"
+            android:layout_width="345dp"
+            android:layout_height="76dp"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="261dp"
+            android:src="@drawable/workshop_software_vemas_logo_2" />
+
+
+        <FrameLayout
+            android:id="@+id/whitecontainer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:background="@drawable/reclogin"
-            />
+            android:layout_below="@id/logoImage"
+            android:layout_centerInParent="true">>
+
+            <ImageView
+                android:id="@+id/recbackground"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/reclogin"
+                />
+
+            <TextView
+                android:id="@+id/signintex"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="70dp"
+                android:gravity="center"
+                android:text="Sign In"
+                android:textColor="#0B0808"
+                android:textSize="20sp"
+                tools:fontFamily="sans-serif-medium"
+                tools:ignore="HardcodedText,RtlSymmetry" />
+        </FrameLayout>
+
 
         <TextView
-            android:id="@+id/signintex"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="70dp"
-            android:gravity="center"
-            android:text="Sign In"
-            android:textColor="#0B0808"
-            android:textSize="20sp"
-            tools:fontFamily="sans-serif-medium"
-            tools:ignore="HardcodedText,RtlSymmetry" />
-    </FrameLayout>
-
-
-    <TextView
-        android:id="@+id/emailLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/logoImage"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="71dp"
-        android:layout_marginTop="100dp"
-        android:text="Email"
-        android:textColor="#000000"
-        android:textSize="14sp" />
-
-    <EditText
-        android:id="@+id/emailEditText"
-        android:layout_width="260dp"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/emailLabel"
-
-        android:layout_centerHorizontal="true"
-        android:layout_marginStart="71dp"
-        android:layout_marginTop="8dp"
-        android:background="@drawable/rounded_box"
-        android:hint="Email"
-        android:inputType="textEmailAddress"
-        android:padding="8dp" />
-
-    <TextView
-        android:id="@+id/passwordLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/emailEditText"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="71dp"
-        android:layout_marginTop="8dp"
-        android:text="Password"
-        android:textColor="#000000"
-        android:textSize="14sp" />
-
-    <EditText
-        android:id="@+id/passwordEditText"
-        android:layout_width="260dp"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/passwordLabel"
-        android:layout_centerHorizontal="true"
-        android:layout_marginStart="71dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="56dp"
-        android:background="@drawable/rounded_box"
-        android:hint="@string/password"
-        android:inputType="textPassword"
-        android:padding="8dp" />
-
-    <FrameLayout
-        android:id="@+id/loginButtonContainer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/passwordEditText"
-        android:layout_alignParentStart="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginStart="99dp"
-        android:layout_marginTop="10dp">
-
-        <ImageButton
-            android:id="@+id/loginButton"
+            android:id="@+id/emailLabel"
             android:layout_width="wrap_content"
-            android:layout_height="49dp"
-            android:background="@android:color/transparent"
-            android:src="@drawable/loginbutton"/>
+            android:layout_height="wrap_content"
+            android:layout_below="@id/logoImage"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="71dp"
+            android:layout_marginTop="100dp"
+            android:text="Email"
+            android:textColor="#000000"
+            android:textSize="14sp" />
+
+        <EditText
+            android:id="@+id/emailEditText"
+            android:layout_width="260dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/emailLabel"
+
+            android:layout_centerHorizontal="true"
+            android:layout_marginStart="71dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/rounded_box"
+            android:hint="Email"
+            android:inputType="textEmailAddress"
+            android:padding="8dp" />
+
         <TextView
-            android:id="@+id/loginButtonText"
+            android:id="@+id/passwordLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="Login"
-            android:textColor="#FFFFFF"
-            android:textSize="20sp"/>
-    </FrameLayout>
+            android:layout_below="@id/emailEditText"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="71dp"
+            android:layout_marginTop="8dp"
+            android:text="Password"
+            android:textColor="#000000"
+            android:textSize="14sp" />
 
+        <EditText
+            android:id="@+id/passwordEditText"
+            android:layout_width="260dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/passwordLabel"
+            android:layout_centerHorizontal="true"
+            android:layout_marginStart="71dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="56dp"
+            android:background="@drawable/rounded_box"
+            android:hint="@string/password"
+            android:inputType="textPassword"
+            android:padding="8dp" />
 
+        <FrameLayout
+            android:id="@+id/loginButtonContainer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/passwordEditText"
+            android:layout_alignParentStart="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginStart="99dp"
+            android:layout_marginTop="10dp">
 
+            <ImageButton
+                android:id="@+id/loginButton"
+                android:layout_width="wrap_content"
+                android:layout_height="49dp"
+                android:background="@android:color/transparent"
+                android:src="@drawable/loginbutton"/>
+            <TextView
+                android:id="@+id/loginButtonText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Login"
+                android:textColor="#FFFFFF"
+                android:textSize="20sp"/>
+        </FrameLayout>
 
-</RelativeLayout>
+    </RelativeLayout>
+</ScrollView>

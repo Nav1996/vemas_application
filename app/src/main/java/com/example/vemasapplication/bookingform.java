@@ -112,6 +112,7 @@ public class bookingform extends Activity {
                 deleteBooking();
             }
         });
+
         countrySpinner = findViewById(R.id.countrySpinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
                 this, R.array.countries, android.R.layout.simple_spinner_item
