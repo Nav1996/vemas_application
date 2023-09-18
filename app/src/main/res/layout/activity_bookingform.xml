@@ -213,7 +213,7 @@
                         android:layout_width="60dp"
                         android:layout_height="50dp"
                         android:layout_weight="1"
-                        android:text="Cancel"
+                        android:text="Confirm"
                         android:textColor="#FFFFFF"
                         android:textSize="15sp"
                         android:background="@drawable/rectangle_14"

@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -120,6 +121,8 @@ public class bookingform extends Activity {
         dateEditText = findViewById(R.id.dateEditText);
         timeEditText = findViewById(R.id.timeEditText);
         calendar = Calendar.getInstance();
+        dateEditText.setInputType(InputType.TYPE_NULL);
+        timeEditText.setInputType(InputType.TYPE_NULL);
 
         updateDateAndTimeFields();
 
@@ -166,19 +169,38 @@ public class bookingform extends Activity {
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Call the createBooking function here
-
-                if(statusCode.equals("10")){
+                if (statusCode.equals("10")) {
                     showToast("Booking already Confirmed");
-                }
-                else{
-                    progressDialog.show();
-                    updateBooking("10");
+                } else {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+                    builder.setTitle("Confirm Booking");
+                    builder.setMessage("Are you sure you want to Confirm this booking?");
 
-                }
+                    // Add a positive button
+                    builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            progressDialog.show();
+                            updateBooking("10");
+                            dialog.dismiss();
+                        }
+                    });
 
+                    // Add a negative button
+                    builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+
+                    // Create and show the AlertDialog
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                }
             }
         });
+
 
         updateButton.setOnClickListener(new View.OnClickListener() {
             @Override
