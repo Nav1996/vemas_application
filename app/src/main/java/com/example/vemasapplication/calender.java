@@ -5,11 +5,13 @@ import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.CalendarView;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.view.LayoutInflater;
@@ -115,13 +117,24 @@ public class calender extends AppCompatActivity {
                                             String requestedDate = item.optString("requestedDate", "");
                                             String time = extractTimeFromDateTime(requestedDate);
                                             String id = item.optString("id");
+                                            String code = item.optString("status");
+                                            Log.d("code",code);
 
-                                            // Inflate the booking details item layout
                                             View bookingDetailsItem = LayoutInflater.from(calender.this).inflate(R.layout.booking_details_layout, null);
 
                                             TextView vehicleNumberTextView = bookingDetailsItem.findViewById(R.id.vehicleNumberTextView);
                                             TextView ownerNameTextView = bookingDetailsItem.findViewById(R.id.ownerNameTextView);
                                             TextView timeTextView = bookingDetailsItem.findViewById(R.id.timeTextView);
+                                            ImageView bookingstatus = bookingDetailsItem.findViewById(R.id.bookingtriangle);
+
+                                            if(code.equals("50")){
+                                                int newColor = Color.parseColor("#ff6384"); // Replace with your desired color code
+                                                bookingstatus.setColorFilter(newColor);
+                                            }
+                                            if(code.equals("10")){
+                                                int newColor = Color.parseColor("#36a2eb"); // Replace with your desired color code
+                                                bookingstatus.setColorFilter(newColor);
+                                            }
                                             timeTextView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                                                 @Override
                                                 public void onFocusChange(View v, boolean hasFocus) {
@@ -230,6 +243,8 @@ public class calender extends AppCompatActivity {
                                                     String ownerName = item.optString("customerName", "");
                                                     String requestedDate = item.optString("requestedDate", "");
                                                     String id = item.optString("id");
+                                                    String code = item.optString("status");
+
 
                                                     String time = extractTimeFromDateTime(requestedDate);
 
@@ -239,6 +254,16 @@ public class calender extends AppCompatActivity {
                                                     TextView vehicleNumberTextView = bookingDetailsItem.findViewById(R.id.vehicleNumberTextView);
                                                     TextView ownerNameTextView = bookingDetailsItem.findViewById(R.id.ownerNameTextView);
                                                     TextView timeTextView = bookingDetailsItem.findViewById(R.id.timeTextView);
+                                                    ImageView bookingstatus = bookingDetailsItem.findViewById(R.id.bookingtriangle);
+
+                                                    if(code.equals("50")){
+                                                        int newColor = Color.parseColor("#ff6384"); // Replace with your desired color code
+                                                        bookingstatus.setColorFilter(newColor);
+                                                    }
+                                                    if(code.equals("10")){
+                                                        int newColor = Color.parseColor("#36a2eb"); // Replace with your desired color code
+                                                        bookingstatus.setColorFilter(newColor);
+                                                    }
 
                                                     vehicleNumberTextView.setText("" + vehicleNumber);
                                                     ownerNameTextView.setText("" + ownerName);

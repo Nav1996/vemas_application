@@ -55,6 +55,8 @@ public class bookingform extends Activity {
     String update = "";
     private ProgressDialog progressDialog;
 
+    private String statusCode =" ";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -161,13 +163,30 @@ public class bookingform extends Activity {
             }
         });
 
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Call the createBooking function here
+
+                if(statusCode.equals("10")){
+                    showToast("Booking already Confirmed");
+                }
+                else{
+                    progressDialog.show();
+                    updateBooking("10");
+
+                }
+
+            }
+        });
+
         updateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 progressDialog.show();
 
-                updateBooking();
+                updateBooking("50");
             }
         });
 
@@ -194,9 +213,6 @@ public class bookingform extends Activity {
                         if (resultObject.length() > 0) {
 
                             JSONArray nestedResultArray = resultObject.getJSONArray("result");
-                            customerNameEditText.setText("");
-                            emailAddressEditText.setText("");
-                            phoneNumberEditText.setText("");
 
                             for (int i = 0; i < nestedResultArray.length(); i++) {
                                 JSONObject nestedResultObject = nestedResultArray.getJSONObject(i);
@@ -255,7 +271,7 @@ public class bookingform extends Activity {
                                             });
                                         } catch (JSONException e) {
                                             e.printStackTrace();
-                                            showToast("Error: Invalid JSON response for customer information");
+                                           // showToast("Error: Invalid JSON response for customer information");
                                         }
                                     }
 
@@ -266,8 +282,6 @@ public class bookingform extends Activity {
                                 });
                             }
                         } else {
-                            // No results found in the response
-
                             Log.d("vehicle", "No matching vehicles found.");
                         }
                     } else {
@@ -343,10 +357,10 @@ public class bookingform extends Activity {
 
 
     private void createBooking() {
-        String vehicleId = "0"; // Replace with the actual vehicle ID
+        String vehicleId = "0";
         String selectedDate = dateEditText.getText().toString();
         String selectedTime = timeEditText.getText().toString();
-        String customerId = "0"; // Replace with the actual customer ID
+        String customerId = "0";
         String customerName = customerNameEditText.getText().toString();
         String customerEmail = emailAddressEditText.getText().toString();
         String customerMobile = countrySpinner.getSelectedItem().toString() + phoneNumberEditText.getText().toString();
@@ -357,14 +371,15 @@ public class bookingform extends Activity {
         String status = "50";
         String dateTimeString = selectedDate + "T" + selectedTime;
 
-        // Validate the date format
         SimpleDateFormat inputDateFormat = new SimpleDateFormat("dd MMM yyyy", Locale.getDefault());
+        SimpleDateFormat inputMonthFormat = new SimpleDateFormat("MMM", Locale.getDefault());
         inputDateFormat.setLenient(false);
 
         try {
             Date date = inputDateFormat.parse(selectedDate);
-            if (!inputDateFormat.format(date).equals(selectedDate)) {
-                // The date format is invalid
+            String month = inputMonthFormat.format(date);
+            if (!month.equalsIgnoreCase(selectedDate.substring(3, 6))) {
+
                 showToast("Invalid date format. Please use dd MMM yyyy format.");
                 return;
             }
@@ -388,8 +403,6 @@ public class bookingform extends Activity {
         try {
             Date date = inputFormat.parse(dateTimeString);
             requestedDate = outputFormat.format(date);
-
-            // Call the createBooking function from ApiClient
             ApiClient.createBooking(accessToken, vehicleId, requestedDate, customerId,
                     customerName, customerEmail, customerMobile, notes,
                     customerPhone, objectId, vehicleRegistrationNumber, status,
@@ -438,8 +451,6 @@ public class bookingform extends Activity {
         progressDialog.dismiss();
     }
 
-
-    // Helper method to show a toast on the main UI thread
     private void showToast(final String message) {
         runOnUiThread(new Runnable() {
             @Override
@@ -452,8 +463,6 @@ public class bookingform extends Activity {
 
     private void fetchDataAndPopulateForm(String accessToken, String bookingId) {
         Log.d("fetchDataAndPopulateForm", "Called with accessToken: " + accessToken + " and bookingId: " + bookingId);
-
-        // Get the list of bookings
         ApiClient.getBookings(accessToken, "10", "1", formattedStartDate, formattedEndDate, "", "", "", new ApiClient.ApiResponseListener() {
             @Override
             public void onResponse(String response) {
@@ -501,24 +510,24 @@ public class bookingform extends Activity {
     }
     private void populateFormWithData(String response) {
         try {
-            // Parse the JSON response
+
             Log.d("response", response);
             JSONObject jsonResponse = new JSONObject(response);
 
-            // Extract data from the JSON response and populate your form fields
             String vehicleRegistrationNumber = jsonResponse.optString("vehicleRegistrationNumber", "");
             String customerName = jsonResponse.optString("customerName", "");
             String customerEmail = jsonResponse.optString("customerEmail", "");
             String customerPhone = jsonResponse.optString("customerPhone", "");
             String notes = jsonResponse.optString("notes", "");
+            statusCode = jsonResponse.optString("status", "");
             String requestedDateAndTime = jsonResponse.optString("requestedDate", ""); // Replace "requestedDate" with the actual field name in your JSON response for date and time
 
-            // Split the requestedDateAndTime into date and time parts
+            Log.d("Status code",statusCode);
             String[] dateAndTimeParts = requestedDateAndTime.split("T");
             String datePart = dateAndTimeParts[0];
             String timePart = dateAndTimeParts[1];
 
-            // Format datePart into the desired format "dd MMM yyyy"
+
             SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
             SimpleDateFormat outputFormat = new SimpleDateFormat("dd MMM yyyy", Locale.US);
 
@@ -530,8 +539,6 @@ public class bookingform extends Activity {
                 showToast("Error: Invalid date format");
                 return;
             }
-
-            // Use runOnUiThread to update UI elements
             final String finalDatePart = datePart; // Declare datePart as final
 
             runOnUiThread(new Runnable() {
@@ -558,12 +565,8 @@ public class bookingform extends Activity {
                     phoneNumberEditText.setText(remainingPhoneNumber);
 
                     notesEditText.setText(notes);
-
-                    // Set formatted date and time fields
                     dateEditText.setText(finalDatePart);
                     timeEditText.setText(timePart);
-
-                    // You can populate other fields in a similar manner
                 }
             });
 
@@ -574,8 +577,6 @@ public class bookingform extends Activity {
     }
 
 
-
-    // Helper method to extract the country code from the phone number
     private String getCountryCodeFromPhoneNumber(String phoneNumber) {
         if (phoneNumber != null && phoneNumber.length() >= 2) {
             return phoneNumber.substring(0, 2);
@@ -594,8 +595,6 @@ public class bookingform extends Activity {
         return -1;
     }
 
-
-    // Helper method to get the remaining part of the phone number (excluding country code)
     private String getRemainingPhoneNumber(String phoneNumber) {
         if (phoneNumber != null && phoneNumber.length() >= 2) {
             return phoneNumber.substring(3);
@@ -662,10 +661,7 @@ public class bookingform extends Activity {
                 intent.putExtra("accessToken", accessToken);
                 intent.putExtra("delete", "delete");
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                // Start the 'calendar' activity
                 startActivity(intent);
-
-                // Optionally, navigate to another activity or perform any additional actions here
             }
 
             @Override
@@ -674,14 +670,8 @@ public class bookingform extends Activity {
             }
         });
     }
-
-
-
-
-    private void updateBooking() {
-        String bookingId = id; // Replace with the actual booking ID
-
-        // Get input data
+    private void updateBooking(String code) {
+        String bookingId = id;
         String requestedDate = dateEditText.getText().toString();
         String requestedTime = timeEditText.getText().toString();
         String customerName = customerNameEditText.getText().toString();
@@ -690,12 +680,9 @@ public class bookingform extends Activity {
         String notes = notesEditText.getText().toString();
         String customerPhone = phoneNumberEditText.getText().toString();
         String vehicleRegistrationNumber = vehicleRegistrationEditText.getText().toString();
-        String status = "50"; // Replace with the desired status code
+        String status = code;
         String dateTimeString = requestedDate + "T" + requestedTime;
 
-
-
-        // Perform input validation
         if (TextUtils.isEmpty(requestedDate) || TextUtils.isEmpty(customerName) ||
                 TextUtils.isEmpty(customerEmail) || TextUtils.isEmpty(customerMobile) ||
                 TextUtils.isEmpty(customerPhone) || TextUtils.isEmpty(vehicleRegistrationNumber)) {
@@ -705,7 +692,6 @@ public class bookingform extends Activity {
         Log.d("selectedTime", requestedTime);
         Log.d("selectedDate", requestedDate);
 
-        // Format the date in the desired format
         SimpleDateFormat inputFormat = new SimpleDateFormat("dd MMM yyyy", Locale.US); // Specify the input date format
         SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 
@@ -721,8 +707,6 @@ public class bookingform extends Activity {
         }
 
         Log.d("date",requestedDate);
-
-        // Call the updateBooking function from ApiClient
         ApiClient.updateBooking(accessToken, bookingId, "0","0", requestedDate, customerName, customerEmail, customerMobile, notes, customerPhone, vehicleRegistrationNumber, status, new ApiClient.ApiResponseListener() {
 
             @Override
@@ -732,25 +716,28 @@ public class bookingform extends Activity {
                     JSONObject jsonResponse = new JSONObject(response);
                     int statusCode = jsonResponse.getInt("statusCode");
 
-                    if (statusCode == 200) {
-                        // Success, show a toast with the success message
-                        showToast("Booking updated successfully");
-                        Intent intent = new Intent(bookingform.this, calender.class);
+                    if (statusCode == 200 ) {
 
-                        // Pass the access token as an extra to the 'calendar' activity
+                        String toast;
+                        if(code.equals("10")){
+                            toast="Booking Confirmed";
+                        }
+                        else {
+                            toast = "Booking updated successfully";
+                        }
+
+                        showToast(toast);
+                        Intent intent = new Intent(bookingform.this, calender.class);
                         intent.putExtra("accessToken", accessToken);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                        // Start the 'calendar' activity
                         startActivity(intent);
                         finish();
 
                     } else {
-                        // Error, show a toast with the error message
                         showToast("Error: " + jsonResponse.optString("errorMessage", "Unknown error"));
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    // Handle JSON parsing error
                     showToast("Error: Invalid JSON response");
                 }
             }
@@ -762,9 +749,5 @@ public class bookingform extends Activity {
         });
         progressDialog.dismiss();
     }
-
-
-
-
 
 }
