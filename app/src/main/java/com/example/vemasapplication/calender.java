@@ -26,6 +26,8 @@ public class calender extends AppCompatActivity {
 
 
     private static final int REQUEST_CODE = 1;
+    private int previousYear;
+    private int previousMonth;
 
 
 
@@ -46,6 +48,8 @@ public class calender extends AppCompatActivity {
 
         Log.d("accesstoken", accessToken);
 
+
+
         CalendarView calendarView = findViewById(R.id.calendarView);
         LinearLayout bookingDetailsLayout = findViewById(R.id.linearLayoutContainer);
         Button logout = findViewById(R.id.logoutButton);
@@ -55,6 +59,8 @@ public class calender extends AppCompatActivity {
                 showLogoutConfirmationDialog();
             }
         });
+
+
 
         calendarView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -85,6 +91,9 @@ public class calender extends AppCompatActivity {
         String formattedStartDate = dateFormat.format(startDate.getTime());
         String formattedEndDate = dateFormat.format(endDate.getTime());
         fetchDataAndDisplay();
+
+        previousYear = currentDate.get(Calendar.YEAR);
+        previousMonth = currentDate.get(Calendar.MONTH);
 
 
         // Call the API to get events for the current date
@@ -191,6 +200,11 @@ public class calender extends AppCompatActivity {
         });
 
 
+
+
+
+
+
         calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override
             public void onSelectedDayChange(CalendarView view, int year, int month, int dayOfMonth) {
@@ -199,6 +213,10 @@ public class calender extends AppCompatActivity {
                 selectedCalendar.set(Calendar.YEAR, year);
                 selectedCalendar.set(Calendar.MONTH, month);
                 selectedCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+
+
+
+
 
                 // Set the time to midnight (00:00) for startDate
                 Calendar startDate = (Calendar) selectedCalendar.clone();

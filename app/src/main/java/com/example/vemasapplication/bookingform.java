@@ -382,6 +382,9 @@ public class bookingform extends Activity {
     private void createBooking() {
         String vehicleId = "0";
         String selectedDate = dateEditText.getText().toString();
+        selectedDate = selectedDate.replace("Sept", "Sep");
+        selectedDate = selectedDate.replace("sept", "Sep");
+        Log.d("date selected",selectedDate);
         String selectedTime = timeEditText.getText().toString();
         String customerId = "0";
         String customerName = customerNameEditText.getText().toString();
@@ -398,19 +401,7 @@ public class bookingform extends Activity {
         SimpleDateFormat inputMonthFormat = new SimpleDateFormat("MMM", Locale.getDefault());
         inputDateFormat.setLenient(false);
 
-        try {
-            Date date = inputDateFormat.parse(selectedDate);
-            String month = inputMonthFormat.format(date);
-            if (!month.equalsIgnoreCase(selectedDate.substring(3, 6))) {
 
-                showToast("Invalid date format. Please use dd MMM yyyy format.");
-                return;
-            }
-        } catch (ParseException e) {
-            // Invalid date format
-            showToast("Invalid date format. Please use dd MMM yyyy format.");
-            return;
-        }
 
         SimpleDateFormat inputFormat = new SimpleDateFormat("dd MMM yyyy'T'HH:mm", Locale.US);
         SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
@@ -426,6 +417,9 @@ public class bookingform extends Activity {
         try {
             Date date = inputFormat.parse(dateTimeString);
             requestedDate = outputFormat.format(date);
+
+            requestedDate = requestedDate.replace("sept", "sep");
+            Log.d("date",requestedDate);
             ApiClient.createBooking(accessToken, vehicleId, requestedDate, customerId,
                     customerName, customerEmail, customerMobile, notes,
                     customerPhone, objectId, vehicleRegistrationNumber, status,
@@ -696,6 +690,7 @@ public class bookingform extends Activity {
     private void updateBooking(String code) {
         String bookingId = id;
         String requestedDate = dateEditText.getText().toString();
+        requestedDate = requestedDate.replace("Sept", "Sep");
         String requestedTime = timeEditText.getText().toString();
         String customerName = customerNameEditText.getText().toString();
         String customerEmail = emailAddressEditText.getText().toString();
@@ -722,6 +717,7 @@ public class bookingform extends Activity {
         try {
             Date date = inputFormat.parse(dateTimeString);
             requestedDate = outputFormat.format(date);
+            requestedDate = requestedDate.replace("sept", "sep");
             requestedDate = requestedDate.substring(0, 11) + requestedTime + requestedDate.substring(16);
         } catch (ParseException e) {
             e.printStackTrace();
