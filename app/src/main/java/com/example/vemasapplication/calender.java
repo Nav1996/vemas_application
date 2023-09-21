@@ -1,5 +1,6 @@
 package com.example.vemasapplication;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatImageButton;
 
 import android.app.ActivityManager;
 import android.app.AlertDialog;
@@ -8,6 +9,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CalendarView;
 import android.widget.ImageButton;
@@ -52,6 +54,48 @@ public class calender extends AppCompatActivity {
 
         CalendarView calendarView = findViewById(R.id.calendarView);
         LinearLayout bookingDetailsLayout = findViewById(R.id.linearLayoutContainer);
+
+        AppCompatImageButton prevMonthButton = (AppCompatImageButton) ((ViewGroup) calendarView.getChildAt(0)).getChildAt(1);
+
+// Get the previous month button (Assuming it's the first child)
+        AppCompatImageButton nextMonthButton = (AppCompatImageButton) ((ViewGroup) calendarView.getChildAt(0)).getChildAt(2);
+
+        nextMonthButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                long currentDateInMillis = calendarView.getDate();
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTimeInMillis(currentDateInMillis);
+                calendar.add(Calendar.MONTH, 1);
+                long newDateInMillis = calendar.getTimeInMillis();
+                calendarView.setDate(newDateInMillis);
+                bookingDetailsLayout.removeAllViews();
+                calendarView.setDate(calendar.getTimeInMillis(), false, false);
+                fetchDataAndDisplay(calendar.getTimeInMillis());
+
+
+            }
+        });
+
+        prevMonthButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                long currentDateInMillis = calendarView.getDate();
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTimeInMillis(currentDateInMillis);
+                calendar.add(Calendar.MONTH, -1);
+                long newDateInMillis = calendar.getTimeInMillis();
+                calendarView.setDate(newDateInMillis);
+                bookingDetailsLayout.removeAllViews();
+                calendarView.setDate(calendar.getTimeInMillis(), false, false);
+                fetchDataAndDisplay(calendar.getTimeInMillis());
+
+            }
+        });
+
+
         Button logout = findViewById(R.id.logoutButton);
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -535,6 +579,126 @@ public class calender extends AppCompatActivity {
             }
         });
     }
+
+    private void fetchDataAndDisplay(long selectedDateInMillis) {
+        Log.d("calender", "Fetching data and displaying...");
+        String accessToken = getIntent().getStringExtra("accessToken");
+
+        CalendarView calendarView = findViewById(R.id.calendarView);
+        LinearLayout bookingDetailsLayout = findViewById(R.id.linearLayoutContainer);
+
+        // Create a Calendar instance from the selected date in milliseconds
+        Calendar selectedDate = Calendar.getInstance();
+        selectedDate.setTimeInMillis(selectedDateInMillis);
+
+        // Set the time to midnight (00:00) for startDate
+        Calendar startDate = (Calendar) selectedDate.clone();
+        startDate.set(Calendar.HOUR_OF_DAY, 0);
+        startDate.set(Calendar.MINUTE, 0);
+
+        // Set the time to 23:59 for endDate
+        Calendar endDate = (Calendar) selectedDate.clone();
+        endDate.set(Calendar.HOUR_OF_DAY, 23);
+        endDate.set(Calendar.MINUTE, 59);
+
+        // Format the startDate and endDate in "yyyy-MM-dd HH:mm" format
+        SimpleDateFormat dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        String formattedStartDate = dateTimeFormat.format(startDate.getTime());
+        String formattedEndDate = dateTimeFormat.format(endDate.getTime());
+
+        // Call the API to get events for the selected date
+        ApiClient.getBookings(accessToken, "99", "1", formattedStartDate, formattedEndDate, "", "", "", new ApiClient.ApiResponseListener() {
+            @Override
+            public void onResponse(final String response) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Log.d("Response", "JSON Response: " + response);
+
+                        try {
+                            JSONObject jsonResponse = new JSONObject(response);
+                            JSONObject resultObject = jsonResponse.optJSONObject("result");
+
+                            if (resultObject != null) {
+                                JSONArray resultArray = resultObject.optJSONArray("result");
+                                Log.d("Response", "Result Array Length: " + (resultArray != null ? resultArray.length() : 0));
+
+                                // Clear any previous data in the layout
+                                bookingDetailsLayout.removeAllViews();
+
+                                if (resultArray != null) {
+                                    for (int i = 0; i < resultArray.length(); i++) {
+                                        JSONObject item = resultArray.optJSONObject(i);
+
+                                        if (item != null) {
+                                            String vehicleNumber = item.optString("vehicleRegistrationNumber", "");
+                                            String ownerName = item.optString("customerName", "");
+                                            String requestedDate = item.optString("requestedDate", "");
+                                            String time = extractTimeFromDateTime(requestedDate);
+                                            String id = item.optString("id");
+                                            String code = item.optString("status");
+
+                                            // Inflate the booking details item layout
+                                            View bookingDetailsItem = LayoutInflater.from(calender.this).inflate(R.layout.booking_details_layout, null);
+
+                                            TextView vehicleNumberTextView = bookingDetailsItem.findViewById(R.id.vehicleNumberTextView);
+                                            TextView ownerNameTextView = bookingDetailsItem.findViewById(R.id.ownerNameTextView);
+                                            TextView timeTextView = bookingDetailsItem.findViewById(R.id.timeTextView);
+                                            ImageView bookingstatus = bookingDetailsItem.findViewById(R.id.bookingtriangle);
+
+                                            if(code.equals("50")){
+                                                int newColor = Color.parseColor("#ff6384"); // Replace with your desired color code
+                                                bookingstatus.setColorFilter(newColor);
+                                            }
+                                            if(code.equals("10")){
+                                                int newColor = Color.parseColor("#36a2eb"); // Replace with your desired color code
+                                                bookingstatus.setColorFilter(newColor);
+                                            }
+                                            vehicleNumberTextView.setText("" + vehicleNumber);
+                                            ownerNameTextView.setText("" + ownerName);
+                                            timeTextView.setText("" + time);
+
+                                            // Set an OnClickListener to each item
+                                            bookingDetailsItem.setOnClickListener(new View.OnClickListener() {
+                                                @Override
+                                                public void onClick(View v) {
+                                                    // Create an Intent to start the bookingform activity
+                                                    Intent intent = new Intent(calender.this, bookingform.class);
+
+                                                    // Put the data as extras in the Intent
+                                                    intent.putExtra("id", id);
+                                                    intent.putExtra("accessToken", accessToken);
+                                                    intent.putExtra("startdate", formattedStartDate);
+                                                    intent.putExtra("enddate", formattedEndDate);
+                                                    intent.putExtra("update", "update");
+
+                                                    // Start the bookingform activity
+                                                    startActivity(intent);
+                                                }
+                                            });
+
+                                            // Add the booking details item to the layout
+                                            bookingDetailsLayout.addView(bookingDetailsItem);
+                                        }
+                                    }
+                                }
+                            } else {
+                                Log.d("Response", "No 'result' object found in the JSON response.");
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+            }
+
+            @Override
+            public void onError(final Exception e) {
+                // Handle API error here
+            }
+        });
+    }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
