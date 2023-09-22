@@ -57,6 +57,7 @@ public class bookingform extends Activity {
     private ProgressDialog progressDialog;
 
     private String statusCode =" ";
+    private boolean dataPopulated = false;
 
 
     @Override
@@ -135,6 +136,7 @@ public class bookingform extends Activity {
         Button saveButton = findViewById(R.id.saveButton);
 
         vehicleRegistrationEditText.addTextChangedListener(new TextWatcher() {
+            private boolean isUserTyping = false;
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                 // This method is not needed, but you can implement it if necessary
@@ -142,17 +144,21 @@ public class bookingform extends Activity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // This method is called when the text in the field changes
+                isUserTyping = true;
+
+
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-                // This method is called after the text has changed
-                String searchText = s.toString();
-                if (!TextUtils.isEmpty(searchText)) {
-                    // If the text is not empty, call the API to search for vehicles
-                    searchVehicles(searchText);
+
+                if (isUserTyping && !dataPopulated) {
+                    String searchText = s.toString();
+                    if (!TextUtils.isEmpty(searchText)) {
+                        searchVehicles(searchText);
+                    }
                 }
+                isUserTyping = false;
             }
         });
 
@@ -530,6 +536,7 @@ public class bookingform extends Activity {
 
             Log.d("response", response);
             JSONObject jsonResponse = new JSONObject(response);
+            dataPopulated = true;
 
             String vehicleRegistrationNumber = jsonResponse.optString("vehicleRegistrationNumber", "");
             String customerName = jsonResponse.optString("customerName", "");
@@ -566,10 +573,10 @@ public class bookingform extends Activity {
                     customerNameEditText.setText(customerName);
                     emailAddressEditText.setText(customerEmail);
 
-                    // Extract the country code from the phone number
+
                     String countryCode = getCountryCodeFromPhoneNumber(customerPhone);
 
-                    // Set the value of the country spinner
+
                     if (!TextUtils.isEmpty(countryCode)) {
                         int position = getCountryPosition(countryCode);
                         if (position != -1) {
@@ -577,7 +584,7 @@ public class bookingform extends Activity {
                         }
                     }
 
-                    // Set the remaining part of the phone number (excluding country code) in phoneNumberEditText
+
                     String remainingPhoneNumber = getRemainingPhoneNumber(customerPhone);
                     phoneNumberEditText.setText(remainingPhoneNumber);
 
@@ -694,9 +701,9 @@ public class bookingform extends Activity {
         String requestedTime = timeEditText.getText().toString();
         String customerName = customerNameEditText.getText().toString();
         String customerEmail = emailAddressEditText.getText().toString();
-        String customerMobile = phoneNumberEditText.getText().toString();
+        String customerMobile = countrySpinner.getSelectedItem().toString() + phoneNumberEditText.getText().toString();
         String notes = notesEditText.getText().toString();
-        String customerPhone = phoneNumberEditText.getText().toString();
+        String customerPhone =countrySpinner.getSelectedItem().toString() + phoneNumberEditText.getText().toString();
         String vehicleRegistrationNumber = vehicleRegistrationEditText.getText().toString();
         String status = code;
         String dateTimeString = requestedDate + "T" + requestedTime;

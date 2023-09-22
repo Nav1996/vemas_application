@@ -8,10 +8,13 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CalendarView;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -28,8 +31,8 @@ public class calender extends AppCompatActivity {
 
 
     private static final int REQUEST_CODE = 1;
-    private int previousYear;
-    private int previousMonth;
+    private int previousYear,previousMonth;
+    private EditText searchEditText ;
 
 
 
@@ -41,14 +44,36 @@ public class calender extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calender);
         String accessToken = getIntent().getStringExtra("accessToken");
+        searchEditText = findViewById(R.id.searchButton);
         if (getIntent().getStringExtra("delete") != null) {
             Log.d("delete","this hits");
 
-            fetchDataAndDisplay();
+            fetchDataAndDisplay("");
 
         }
 
         Log.d("accesstoken", accessToken);
+
+        searchEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+                String searchText = editable.toString();
+                fetchDataAndDisplay(searchText);
+            }
+        });
+
 
 
 
@@ -134,7 +159,7 @@ public class calender extends AppCompatActivity {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         String formattedStartDate = dateFormat.format(startDate.getTime());
         String formattedEndDate = dateFormat.format(endDate.getTime());
-        fetchDataAndDisplay();
+        fetchDataAndDisplay("");
 
         previousYear = currentDate.get(Calendar.YEAR);
         previousMonth = currentDate.get(Calendar.MONTH);
@@ -467,37 +492,26 @@ public class calender extends AppCompatActivity {
         }
     }
 
-    public void performSearch(View view) {
-        // Implement your search logic here
-        // This method will be called when the searchButton is clicked
-    }
 
-    private void fetchDataAndDisplay() {
-        Log.d("calender", "Fetching data and displaying...");
+    private void fetchDataAndDisplay(String search) {
+        Log.d("search", search);
         String accessToken = getIntent().getStringExtra("accessToken");
-
         CalendarView calendarView = findViewById(R.id.calendarView);
         LinearLayout bookingDetailsLayout = findViewById(R.id.linearLayoutContainer);
 
-        Calendar currentDate = Calendar.getInstance();
 
-        // Set the time to midnight (00:00) for startDate
-        Calendar startDate = (Calendar) currentDate.clone();
-        startDate.set(Calendar.HOUR_OF_DAY, 0);
-        startDate.set(Calendar.MINUTE, 0);
-
-        // Set the time to 23:59 for endDate
-        Calendar endDate = (Calendar) currentDate.clone();
+        long currentDateInMillis = calendarView.getDate();
+        Calendar selectedCalendar = Calendar.getInstance();
+        selectedCalendar.setTimeInMillis(currentDateInMillis);
+        selectedCalendar.set(Calendar.HOUR_OF_DAY, 0);
+        selectedCalendar.set(Calendar.MINUTE, 0);
+        Calendar endDate = (Calendar) selectedCalendar.clone();
         endDate.set(Calendar.HOUR_OF_DAY, 23);
         endDate.set(Calendar.MINUTE, 59);
-
-        // Format the startDate and endDate in "yyyy-MM-dd HH:mm" format
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-        String formattedStartDate = dateFormat.format(startDate.getTime());
+        String formattedStartDate = dateFormat.format(selectedCalendar.getTime());
         String formattedEndDate = dateFormat.format(endDate.getTime());
-
-        // Call the API to get events for the current date
-        ApiClient.getBookings(accessToken, "99", "1", formattedStartDate, formattedEndDate, "", "", "", new ApiClient.ApiResponseListener() {
+        ApiClient.getBookings(accessToken, "99", "1", formattedStartDate, formattedEndDate, "", "", search, new ApiClient.ApiResponseListener() {
             @Override
             public void onResponse(final String response) {
                 runOnUiThread(new Runnable() {
@@ -527,13 +541,24 @@ public class calender extends AppCompatActivity {
                                             String time = extractTimeFromDateTime(requestedDate);
                                             String id = item.optString("id");
 
+                                            String code = item.optString("status");
+
                                             // Inflate the booking details item layout
                                             View bookingDetailsItem = LayoutInflater.from(calender.this).inflate(R.layout.booking_details_layout, null);
 
                                             TextView vehicleNumberTextView = bookingDetailsItem.findViewById(R.id.vehicleNumberTextView);
                                             TextView ownerNameTextView = bookingDetailsItem.findViewById(R.id.ownerNameTextView);
                                             TextView timeTextView = bookingDetailsItem.findViewById(R.id.timeTextView);
+                                            ImageView bookingstatus = bookingDetailsItem.findViewById(R.id.bookingtriangle);
 
+                                            if(code.equals("50")){
+                                                int newColor = Color.parseColor("#ff6384"); // Replace with your desired color code
+                                                bookingstatus.setColorFilter(newColor);
+                                            }
+                                            if(code.equals("10")){
+                                                int newColor = Color.parseColor("#36a2eb"); // Replace with your desired color code
+                                                bookingstatus.setColorFilter(newColor);
+                                            }
                                             vehicleNumberTextView.setText("" + vehicleNumber);
                                             ownerNameTextView.setText("" + ownerName);
                                             timeTextView.setText("" + time);
@@ -707,7 +732,7 @@ public class calender extends AppCompatActivity {
         if (requestCode == REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
 
-                fetchDataAndDisplay();
+                fetchDataAndDisplay("");
             }
         }
 
@@ -747,5 +772,6 @@ public class calender extends AppCompatActivity {
         AlertDialog dialog = builder.create();
         dialog.show();
     }
+
 
 }

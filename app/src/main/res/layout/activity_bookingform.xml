@@ -247,8 +247,13 @@
                 </LinearLayout>
 
             </FrameLayout>
+            <View
+                android:id="@+id/keyboardPlaceholder"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:visibility="invisible" />
 
         </LinearLayout>
-        <!-- Save Button at the Bottom -->
+
     </RelativeLayout>
 </ScrollView>

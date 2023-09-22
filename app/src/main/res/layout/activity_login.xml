@@ -1,9 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fillViewport="true">
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
@@ -24,18 +19,16 @@
             android:layout_alignParentStart="true"
             android:background="#4278B7" />
 
-
     </RelativeLayout>
 
-       <View
+    <View
         android:id="@+id/whiteSpaceArea"
         android:layout_width="match_parent"
         android:layout_marginTop="450dp"
         android:layout_height="300dp"
         android:background="#FFFFFF" />
 
-    <!-- Logo Image -->
-    <!-- Replace with your logo image -->
+
 
     <ImageView
         android:id="@+id/logoImage"
@@ -46,18 +39,17 @@
         android:layout_marginTop="261dp"
         android:src="@drawable/workshop_software_vemas_logo_2" />
 
-
     <FrameLayout
         android:id="@+id/whitecontainer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/logoImage"
-        android:layout_centerInParent="true">>
+        android:layout_centerInParent="true">
 
         <ImageView
             android:id="@+id/recbackground"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="400dp"
             android:layout_gravity="center"
             android:background="@drawable/reclogin"
             />
@@ -74,7 +66,6 @@
             tools:fontFamily="sans-serif-medium"
             tools:ignore="HardcodedText,RtlSymmetry" />
     </FrameLayout>
-
 
     <TextView
         android:id="@+id/emailLabel"
@@ -93,7 +84,6 @@
         android:layout_width="260dp"
         android:layout_height="wrap_content"
         android:layout_below="@id/emailLabel"
-
         android:layout_centerHorizontal="true"
         android:layout_marginStart="71dp"
         android:layout_marginTop="8dp"
@@ -144,6 +134,7 @@
             android:layout_height="49dp"
             android:background="@android:color/transparent"
             android:src="@drawable/loginbutton"/>
+
         <TextView
             android:id="@+id/loginButtonText"
             android:layout_width="wrap_content"
@@ -154,8 +145,11 @@
             android:textSize="20sp"/>
     </FrameLayout>
 
-
-
+    <!-- Keyboard Placeholder (Initially set to invisible) -->
+    <View
+        android:id="@+id/keyboardPlaceholder"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:visibility="invisible" />
 
 </RelativeLayout>
-</ScrollView>
