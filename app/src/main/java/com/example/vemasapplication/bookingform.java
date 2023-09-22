@@ -144,7 +144,7 @@ public class bookingform extends Activity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                isUserTyping = true;
+
 
 
             }
@@ -152,13 +152,13 @@ public class bookingform extends Activity {
             @Override
             public void afterTextChanged(Editable s) {
 
-                if (isUserTyping && !dataPopulated) {
+                if ( !dataPopulated) {
                     String searchText = s.toString();
                     if (!TextUtils.isEmpty(searchText)) {
                         searchVehicles(searchText);
                     }
                 }
-                isUserTyping = false;
+
             }
         });
 
@@ -190,6 +190,7 @@ public class bookingform extends Activity {
                             progressDialog.show();
                             updateBooking("10");
                             dialog.dismiss();
+                            showToast("Booking Confirmed");
                         }
                     });
 
@@ -215,7 +216,8 @@ public class bookingform extends Activity {
 
                 progressDialog.show();
 
-                updateBooking("50");
+                updateBooking(statusCode);
+                showToast("Booking Updated");
             }
         });
 
@@ -745,14 +747,14 @@ public class bookingform extends Activity {
                     if (statusCode == 200 ) {
 
                         String toast;
-                        if(code.equals("10")){
-                            toast="Booking Confirmed";
-                        }
-                        else {
-                            toast = "Booking updated successfully";
-                        }
+//                        if(code.equals("10")){
+//                            toast="Booking Confirmed";
+//                        }
+//                        else {
+//                            toast = "Booking updated successfully";
+//                        }
 
-                        showToast(toast);
+                       // showToast(toast);
                         Intent intent = new Intent(bookingform.this, calender.class);
                         intent.putExtra("accessToken", accessToken);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
